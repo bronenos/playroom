@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "GameScene::GameScene(GameSceneDelegate*):GameScene.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "GameScene::colorSlot():GameScene.h">
+      </ContextState>
+      <ContextState
+         contextName = "GameObject::setMaskMode(bool const&amp;):GameObject.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "GameController::objectAtPoint(GamePoint):GameController.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "*maskPoint">
+            </PersistentString>
+            <PersistentString
+               value = "sizeof(noObject)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GameController::loadShaders():GameController.cpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
