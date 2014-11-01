@@ -20,6 +20,11 @@ void GameController::initialize()
 {
 	GLint w{0}, h{0};
 	
+	glGenFramebuffers(1, &_mainFrameBuffer);
+	if (_mainFrameBuffer) {
+		glBindFramebuffer(GL_FRAMEBUFFER, _mainFrameBuffer);
+	}
+	
 	glGenRenderbuffers(1, &_colorRenderBuffer);
 	if (_colorRenderBuffer) {
 		glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
@@ -27,28 +32,18 @@ void GameController::initialize()
 		
 		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
 		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &h);
+		
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer);
 	}
 	
 	glGenRenderbuffers(1, &_depthRenderBuffer);
 	if (_depthRenderBuffer) {
 		glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
 		
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
 		glEnable(GL_DEPTH_TEST);
 	}
-	
-	glGenFramebuffers(1, &_mainFrameBuffer);
-	if (_mainFrameBuffer) {
-		glBindFramebuffer(GL_FRAMEBUFFER, _mainFrameBuffer);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer);
-	}
-	
-//	glGenFramebuffers(1, &_maskFrameBuffer);
-//	if (_maskFrameBuffer) {
-//		glBindFramebuffer(GL_FRAMEBUFFER, _maskFrameBuffer);
-//		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
-//	}
 	
 	glGenBuffers(1, &_vertexBuffer);
 	if (_vertexBuffer) {
@@ -56,6 +51,9 @@ void GameController::initialize()
 	}
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	
 	this->loadShaders();
 	this->reconfigure();
@@ -153,7 +151,6 @@ void GameController::render()
 	if (_scene->needsUpdateMask()) {
 		_scene->setNeedsUpdateMask(false);
 		
-//		glBindFramebuffer(GL_FRAMEBUFFER, _maskFrameBuffer);
 		glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer);
 		

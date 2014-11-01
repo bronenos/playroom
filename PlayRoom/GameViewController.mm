@@ -7,59 +7,33 @@
 //
 
 #import <GLKit/GLKit.h>
+#import <glm/glm.hpp>
 #import "GameViewController.h"
+#import "GameViewControllerHelper.h"
 #import "GameView.h"
+#import "GameDataSender.h"
+#import "GameDataReceiver.h"
 #import "GameController.h"
 #import "GameObjectPyramid.h"
 
 
-@interface GameViewController()
+@interface GameViewController() <GameDataReceiverDelegate>
 @property(nonatomic, strong) EAGLContext *glContext;
-@property(nonatomic, assign) std::shared_ptr<GameController> gameController;
 @property(nonatomic, strong) CADisplayLink *displayLink;
+
+@property(nonatomic, assign) std::shared_ptr<GameController> gameController;
+@property(nonatomic, assign) std::shared_ptr<GameObjectPyramid> pyramidObject;
+
+@property(nonatomic, strong) GameDataSender *dataSender;
+@property(nonatomic, strong) GameDataReceiver *dataReceiver;
 @end
 
 
-class GameViewControllerHelper : public GameControllerDelegate {
-public:
-	GameViewControllerHelper(GameViewController * __strong &viewController)
-	: _viewController(viewController) {
-	}
-	
-protected:
-	virtual std::pair<float, float> renderSize() {
-		const CGSize ss = _viewController.view.bounds.size;
-		return std::make_pair(ss.width, ss.height);
-	}
-	
-	
-	virtual std::string shaderSource(GLShader shaderType) {
-		NSString *fileName = (shaderType == GLShader::Vertex ? @"vertex" : @"fragment");
-		NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"glsl"];
-		
-		NSString *fileContents = [[NSString alloc] initWithContentsOfFile:filePath
-																 encoding:NSUTF8StringEncoding
-																	error:nil];
-		return [fileContents UTF8String];
-	}
-	
-	
-	virtual void assignBuffer(long bufferID) {
-		[_viewController.glContext renderbufferStorage:bufferID
-										  fromDrawable:(id)_viewController.view.layer];
-	}
-	
-	
-	virtual void presentBuffer(long bufferID) {
-		[_viewController.glContext presentRenderbuffer:bufferID];
-	}
-	
-private:
-	GameViewController *_viewController;
-};
-
-
 @implementation GameViewController
+{
+	CGPoint _prevPoint;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	if ((self = [super initWithCoder:aDecoder])) {
@@ -67,6 +41,8 @@ private:
 		[EAGLContext setCurrentContext:_glContext];
 		
 		_gameController = std::make_shared<GameController>(new GameViewControllerHelper(self));
+		self.dataSender = [[GameDataSender alloc] init];
+		self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
 	}
 	
 	return self;
@@ -83,9 +59,9 @@ private:
 {
 	[super viewDidLoad];
 	
-	UITapGestureRecognizer *rec = [[UITapGestureRecognizer alloc] initWithTarget:self
-																		  action:@selector(doTap:)];
-	[self.view addGestureRecognizer:rec];
+	UIPanGestureRecognizer *panRec = [[UIPanGestureRecognizer alloc] initWithTarget:self
+																			 action:@selector(doRotate:)];
+	[self.view addGestureRecognizer:panRec];
 }
 
 
@@ -96,14 +72,14 @@ private:
 	_gameController->initialize();
 	
 	auto scene = _gameController->scene();
-	scene->look(glm::vec3(0, 25, 140), glm::vec3(0, 0, 0));
+	scene->look(glm::vec3(0, 25, 130), glm::vec3(0, -10, 0));
 	
-	auto object = std::make_shared<GameObjectPyramid>(scene.get());
-	object->setPosition(glm::vec3(0, -20, 0));
-	object->setSize(glm::vec3(40, 40, 40));
-	object->setColor(glm::vec4(0, 0, 0, 0));
-	object->rotate(glm::vec3(0, 9, 0));
-	scene->objects().push_back(object);
+	_pyramidObject = std::make_shared<GameObjectPyramid>(scene.get());
+	_pyramidObject->setPosition(glm::vec3(0, -20, 0));
+	_pyramidObject->setSize(glm::vec3(40, 55, 40));
+	_pyramidObject->setColor(glm::vec4(0, 0, 0, 0));
+	_pyramidObject->rotate(glm::vec3(0, 9, 0));
+	scene->objects().push_back(_pyramidObject);
 }
 
 
@@ -122,17 +98,40 @@ private:
 }
 
 
-- (void)doTap:(UIGestureRecognizer *)rec
+- (void)rotateWithPoint:(CGPoint)pt
 {
-	const CGPoint pt = [rec locationInView:self.view];
-	const CGFloat h = self.view.bounds.size.height;
+	if (pt.x > 0 && _prevPoint.x > 0) {
+		const float deltaX = 0.02 * (pt.x - _prevPoint.x);
+		const float deltaY = 0.02 * (pt.y - _prevPoint.y);
+		_pyramidObject->rotate(glm::vec3(deltaY, deltaX, 0));
+	}
 	
-	auto object = _gameController->objectAtPoint({ pt.x, h - pt.y });
-	if (object.get()) {
-		std::cout << "object" << std::endl;
+	_prevPoint = pt;
+}
+
+
+- (void)doRotate:(UIGestureRecognizer *)rec
+{
+	CGPoint pt = CGPointZero;
+	if (rec.state == UIGestureRecognizerStateChanged) {
+		pt = [rec locationInView:self.view];
 	}
-	else {
-		std::cout << "no object" << std::endl;
-	}
+	
+	[self rotateWithPoint:pt];
+	
+	const CGFloat *objm = &_pyramidObject->m()[0][0];
+	[self.dataSender sendMatrix:objm];
+}
+
+
+//- (void)dataReceiverDidConnect:(GameDataReceiver *)dataReceiver
+//{
+//}
+
+
+- (void)dataReceiver:(id)dataReceiver syncMatrix:(CGFloat *)mat
+{
+	CGFloat *objm = &_pyramidObject->m()[0][0];
+	memcpy(objm, mat, 16 * sizeof(float));
 }
 @end

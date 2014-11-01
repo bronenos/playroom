@@ -74,7 +74,6 @@ private:
 	std::vector<GLubyte> _maskData;
 	
 	GLuint _shaderProgram;
-//	GLuint _renderTexture;
 	GLuint _vertexBuffer;
 	
 	glm::vec3 _eyePosition;
