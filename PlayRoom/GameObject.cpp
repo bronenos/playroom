@@ -50,3 +50,28 @@ void GameObject::render()
 	glUniform3fv(_scene->positionSlot(), 1, &_position[0]);
 	glUniform4fv(_scene->colorSlot(), 1, &_color[0]);
 }
+
+
+glm::vec3 GameObject::calculateNormalVector(GLfloat *v)
+{
+#	define x 0
+#	define y 1
+#	define z 2
+	
+	static GLfloat t1[3];
+	t1[x] = v[3 + x] - v[0 + x];
+	t1[y] = v[3 + y] - v[0 + y];
+	t1[z] = v[3 + z] - v[0 + z];
+	
+	static GLfloat t2[3];
+	t2[x] = v[6 + x] - v[0 + x];
+	t2[y] = v[6 + y] - v[0 + y];
+	t2[z] = v[6 + z] - v[0 + z];
+	
+	static GLfloat c[3];
+	c[x] = t1[y] * t2[z] - t1[z] * t2[y];
+	c[y] = t1[z] * t2[x] - t1[x] * t2[z];
+	c[z] = t1[x] * t2[y] - t1[y] * t2[x];
+	
+	return glm::vec3(c[x], c[y], c[z]);
+}

@@ -31,6 +31,8 @@ public:
 	
 	void setRenderSize(std::pair<GLfloat, GLfloat> renderSize);
 	void look(glm::vec3 eye, glm::vec3 subject);
+	void rotate(glm::vec3 angle);
+	void light(glm::vec3 light);
 	
 	bool needsUpdateMask() { return _needsUpdateMask; }
 	void setNeedsUpdateMask(const bool &a) { _needsUpdateMask = a; }
@@ -42,7 +44,9 @@ public:
 	GLuint modelSlot() { return _modelSlot; }
 	GLuint positionSlot() { return _positionSlot; }
 	GLuint vertexSlot() { return _vertexSlot; }
+	GLuint normalSlot() { return _normalSlot; }
 	GLuint colorSlot() { return _colorSlot; }
+	GLuint lightSlot() { return _lightSlot; }
 	GLuint maskModeSlot() { return _maskModeSlot; }
 	GLuint maskColorSlot() { return _maskColorSlot; }
 	
@@ -57,12 +61,13 @@ private:
 	GLuint _modelSlot;
 	GLuint _positionSlot;
 	GLuint _vertexSlot;
+	GLuint _normalSlot;
 	GLuint _colorSlot;
+	GLuint _lightSlot;
 	GLuint _maskModeSlot;
 	GLuint _maskColorSlot;
 	
-	glm::vec3 _eyePosition;
-	glm::vec3 _subjectPosition;
+	glm::mat4 _matrix;
 	bool _needsUpdateMask = false;
 };
 

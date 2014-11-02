@@ -31,11 +31,13 @@ NSString * const GameDataSenderMatrixUUID = @"180F";
 }
 
 
-- (void)sendMatrix:(const CGFloat[16])mat
+- (void)sendMatrix:(const float[16])mat
 {
-	[self.manager updateValue:[NSData dataWithBytes:mat length:16 * sizeof(CGFloat)]
-			forCharacteristic:self.matrixItem
-		 onSubscribedCentrals:nil];
+	if (self.matrixItem) {
+		[self.manager updateValue:[NSData dataWithBytes:mat length:16 * sizeof(CGFloat)]
+				forCharacteristic:self.matrixItem
+			 onSubscribedCentrals:nil];
+	}
 }
 
 
@@ -51,8 +53,11 @@ NSString * const GameDataSenderMatrixUUID = @"180F";
 																  value:nil
 															permissions:CBAttributePermissionsReadable];
 		
-		CBMutableService *service = [[CBMutableService alloc] initWithType:CBUUID(GameDataSenderServiceUUID) primary:YES];
+		CBMutableService *service = [[CBMutableService alloc] initWithType:CBUUID(GameDataSenderServiceUUID)
+																   primary:YES];
 		service.characteristics = @[ self.matrixItem ];
+		
+		[peripheral removeAllServices];
 		[peripheral addService:service];
 	}
 }

@@ -39,6 +39,8 @@ public:
 	void setColor(const glm::vec4 &a) { _color = a; }
 	void setMaskColor(const glm::vec4 &a) { _maskColor = a; }
 	
+	static glm::vec3 calculateNormalVector(GLfloat *v);
+	
 protected:
 	GameScene *_scene;
 	

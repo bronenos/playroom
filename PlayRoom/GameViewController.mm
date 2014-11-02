@@ -7,6 +7,7 @@
 //
 
 #import <GLKit/GLKit.h>
+#import <CloudKit/CloudKit.h>
 #import <glm/glm.hpp>
 #import "GameViewController.h"
 #import "GameViewControllerHelper.h"
@@ -22,7 +23,11 @@
 @property(nonatomic, strong) CADisplayLink *displayLink;
 
 @property(nonatomic, assign) std::shared_ptr<GameController> gameController;
-@property(nonatomic, assign) std::shared_ptr<GameObjectPyramid> pyramidObject;
+@property(nonatomic, assign) std::shared_ptr<GameScene> scene;
+@property(nonatomic, assign) std::shared_ptr<GameObjectPyramid> pyramidShape;
+
+@property(nonatomic, strong) CKRecordID *pyramidID;
+@property(nonatomic, strong) CKRecord *pyramidRecord;
 
 @property(nonatomic, strong) GameDataSender *dataSender;
 @property(nonatomic, strong) GameDataReceiver *dataReceiver;
@@ -32,6 +37,7 @@
 @implementation GameViewController
 {
 	CGPoint _prevPoint;
+	BOOL _wasMoved;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
@@ -43,9 +49,27 @@
 		_gameController = std::make_shared<GameController>(new GameViewControllerHelper(self));
 		self.dataSender = [[GameDataSender alloc] init];
 		self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
+		
+		self.pyramidID = [[CKRecordID alloc] initWithRecordName:@"pyramid"];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(onAppWillResignActive)
+													 name:UIApplicationWillResignActiveNotification
+												   object:nil];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(onAppWillTerminate)
+													 name:UIApplicationWillTerminateNotification
+												   object:nil];
 	}
 	
 	return self;
+}
+
+
+- (void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
@@ -71,15 +95,18 @@
 	
 	_gameController->initialize();
 	
-	auto scene = _gameController->scene();
-	scene->look(glm::vec3(0, 25, 130), glm::vec3(0, -10, 0));
+	_scene = _gameController->scene();
+	_scene->look(glm::vec3(0, 25, 130), glm::vec3(0, -10, 0));
+	_scene->light(glm::vec3(25, 80, 10));
 	
-	_pyramidObject = std::make_shared<GameObjectPyramid>(scene.get());
-	_pyramidObject->setPosition(glm::vec3(0, -20, 0));
-	_pyramidObject->setSize(glm::vec3(40, 55, 40));
-	_pyramidObject->setColor(glm::vec4(0, 0, 0, 0));
-	_pyramidObject->rotate(glm::vec3(0, 9, 0));
-	scene->objects().push_back(_pyramidObject);
+	_pyramidShape = std::make_shared<GameObjectPyramid>(_scene.get());
+	_pyramidShape->setPosition(glm::vec3(0, -20, 0));
+	_pyramidShape->setSize(glm::vec3(40, 55, 40));
+	_pyramidShape->setColor(glm::vec4(0, 0, 0, 0));
+	_pyramidShape->rotate(glm::vec3(0, 0, 0));
+	_scene->objects().push_back(_pyramidShape);
+	
+	[self requestCloudRecord];
 }
 
 
@@ -103,15 +130,60 @@
 	if (pt.x > 0 && _prevPoint.x > 0) {
 		const float deltaX = 0.02 * (pt.x - _prevPoint.x);
 		const float deltaY = 0.02 * (pt.y - _prevPoint.y);
-		_pyramidObject->rotate(glm::vec3(deltaY, deltaX, 0));
-	}
+		_pyramidShape->rotate(glm::vec3(deltaY, deltaX, 0));
+	}g
 	
 	_prevPoint = pt;
 }
 
 
+- (void)requestCloudRecord
+{
+	__weak typeof(self) weakSelf = self;
+	
+	CKDatabase *db = [[CKContainer defaultContainer] privateCloudDatabase];
+	[db fetchRecordWithID:self.pyramidID completionHandler:^(CKRecord *record, NSError *error){
+		if (weakSelf && record) {
+			__strong typeof(weakSelf) strongSelf = weakSelf;
+			if (strongSelf->_wasMoved == NO) {
+				NSData *data = record[@"matrix"];
+				float *objm = &strongSelf.pyramidShape->m()[0][0];
+				memcpy(objm, data.bytes, 16 * sizeof(float));
+				
+				[strongSelf.dataSender sendMatrix:objm];
+				
+				strongSelf.pyramidRecord = record;
+				[strongSelf updateCloudRecord];
+			}
+		}
+	}];
+}
+
+
+- (void)updateCloudRecord
+{
+	if (self.pyramidRecord == nil) {
+		self.pyramidRecord = [[CKRecord alloc] initWithRecordType:@"config" recordID:self.pyramidID];
+	}
+	
+	const float *objm = &_pyramidShape->m()[0][0];
+	self.pyramidRecord[@"matrix"] = [NSData dataWithBytes:objm length:16 * sizeof(float)];
+}
+
+
+- (void)updateCloudDatabase
+{
+	if (self.pyramidRecord) {
+		CKDatabase *db = [[CKContainer defaultContainer] privateCloudDatabase];
+		[db saveRecord:self.pyramidRecord completionHandler:nil];
+	}
+}
+
+
 - (void)doRotate:(UIGestureRecognizer *)rec
 {
+	_wasMoved = YES;
+	
 	CGPoint pt = CGPointZero;
 	if (rec.state == UIGestureRecognizerStateChanged) {
 		pt = [rec locationInView:self.view];
@@ -119,8 +191,12 @@
 	
 	[self rotateWithPoint:pt];
 	
-	const CGFloat *objm = &_pyramidObject->m()[0][0];
+	const float *objm = &_pyramidShape->m()[0][0];
 	[self.dataSender sendMatrix:objm];
+	
+	if (rec.state == UIGestureRecognizerStateEnded) {
+		[self updateCloudRecord];
+	}
 }
 
 
@@ -131,7 +207,23 @@
 
 - (void)dataReceiver:(id)dataReceiver syncMatrix:(CGFloat *)mat
 {
-	CGFloat *objm = &_pyramidObject->m()[0][0];
+	_wasMoved = YES;
+	
+	float *objm = &_pyramidShape->m()[0][0];
 	memcpy(objm, mat, 16 * sizeof(float));
+	
+	[self updateCloudRecord];
+}
+
+
+- (void)onAppWillResignActive
+{
+	[self updateCloudDatabase];
+}
+
+
+- (void)onAppWillTerminate
+{
+	[self updateCloudDatabase];
 }
 @end

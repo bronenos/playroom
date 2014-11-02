@@ -75,9 +75,6 @@ private:
 	
 	GLuint _shaderProgram;
 	GLuint _vertexBuffer;
-	
-	glm::vec3 _eyePosition;
-	glm::vec3 _subjectPosition;
 };
 
 #endif /* defined(__PlayRoom__GameController__) */

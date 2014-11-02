@@ -31,11 +31,17 @@
 }
 
 
+- (void)startScanning
+{
+	NSArray *services = @[ [CBUUID UUIDWithString:GameDataSenderServiceUUID] ];
+	[self.manager scanForPeripheralsWithServices:services options:nil];
+}
+
+
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
 	if (central.state == CBCentralManagerStatePoweredOn) {
-		NSArray *services = @[ [CBUUID UUIDWithString:GameDataSenderServiceUUID] ];
-		[central scanForPeripheralsWithServices:services options:nil];
+		[self startScanning];
 	}
 }
 
@@ -60,13 +66,15 @@
 
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
+	self.peripheral = nil;
+	[self startScanning];
 }
 
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
-	NSArray *services = @[ [CBUUID UUIDWithString:GameDataSenderServiceUUID] ];
-	[central scanForPeripheralsWithServices:services options:nil];
+	self.peripheral = nil;
+	[self startScanning];
 }
 
 

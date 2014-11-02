@@ -18,23 +18,58 @@ void GameObjectPyramid::render()
 	const GLfloat halfZ = _size.z * 0.5;
 	
 	GLfloat v[] {
+		// top front
 		0,			_size.y,	0,
 		-halfX,		0,			halfZ,
 		halfX,		0,			halfZ,
+		
+		// top right
+		0,			_size.y,	0,
+		halfX,		0,			halfZ,
+		halfX,		0,			-halfZ,
+		
+		// top rare
+		0,			_size.y,	0,
 		halfX,		0,			-halfZ,
 		-halfX,		0,			-halfZ,
-		-halfX,		0,			halfZ,	// back to the [1]
+		
+		// top left
+		0,			_size.y,	0,
+		-halfX,		0,			-halfZ,
+		-halfX,		0,			halfZ,
+		
+		// bottom front
+		halfX,		0,			halfZ,
+		-halfX,		0,			halfZ,
+		-halfX,		0,			-halfZ,
+		
+		// top front
+		-halfX,		0,			-halfZ,
+		halfX,		0,			-halfZ,
+		halfX,		0,			halfZ,
 	};
 	
 	const size_t v_size = sizeof(v);
-	const size_t v_count = v_size / sizeof(*v) / 3;
+	const size_t v_top_count = 4;
+	const size_t v_bottom_count = 2;
 	
 	glBufferData(GL_ARRAY_BUFFER, v_size, v, GL_STATIC_DRAW);
 	glVertexAttribPointer(_scene->vertexSlot(), 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	
-	glCullFace(GL_FRONT);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, v_count);
-	glCullFace(GL_BACK);
-	glDrawArrays(GL_TRIANGLE_FAN, 1, v_count - 1);
-	glCullFace(GL_FRONT);
+	size_t i = 0;
+	size_t cnt = v_top_count;
+	for (; i<cnt; i++) {
+		const glm::vec3 n = GameObject::calculateNormalVector(v + i * 9);
+		glUniform3fv(_scene->normalSlot(), 1, &n[0]);
+		
+		glDrawArrays(GL_TRIANGLES, i * 3, 3);
+	}
+	
+	cnt += v_bottom_count;
+	for (; i<cnt; i++) {
+		const glm::vec3 n = GameObject::calculateNormalVector(v + i * 9);
+		glUniform3fv(_scene->normalSlot(), 1, &n[0]);
+		
+		glDrawArrays(GL_TRIANGLES, i * 3, 3);
+	}
 }

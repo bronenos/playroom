@@ -1,12 +1,16 @@
 uniform mat4 u_vp;
 uniform mat4 u_m;
 uniform vec3 u_position;
+uniform vec3 u_normal;
 uniform vec4 u_color;
+uniform vec4 u_light;
 uniform int u_maskMode;
 
 attribute vec4 a_vertex;
 
+varying vec3 v_vertex;
 varying vec4 v_color;
+varying vec3 v_normal;
 
 
 void main()
@@ -20,5 +24,9 @@ void main()
 		}
 	}
 	
-	gl_Position = (u_vp * u_m * a_vertex) + vec4(u_position, 1.0);
+	mat4 u_mvp = u_vp * u_m;
+	
+	gl_Position = (u_mvp * a_vertex) + vec4(u_position, 1.0);
+	v_vertex = vec3(gl_Position);
+	v_normal = vec3(u_mvp * vec4(u_normal, 0.0));
 }
