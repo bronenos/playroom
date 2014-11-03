@@ -157,14 +157,11 @@
 		if (weakSelf && record) {
 			__strong typeof(weakSelf) strongSelf = weakSelf;
 			if (strongSelf->_wasMoved == NO) {
+				strongSelf.pyramidRecord = record;
+				
 				NSData *data = record[@"matrix"];
 				float *objm = &strongSelf.pyramidShape->m()[0][0];
 				memcpy(objm, data.bytes, 16 * sizeof(float));
-				
-				[strongSelf.dataSender sendMatrix:objm];
-				
-				strongSelf.pyramidRecord = record;
-				[strongSelf updateCloudRecord];
 			}
 		}
 	}];
