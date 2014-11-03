@@ -1,6 +1,5 @@
 uniform mat4 u_vp;
 uniform mat4 u_m;
-uniform vec3 u_position;
 uniform vec3 u_normal;
 uniform vec4 u_color;
 uniform vec4 u_light;
@@ -25,8 +24,8 @@ void main()
 	}
 	
 	mat4 u_mvp = u_vp * u_m;
+	gl_Position = u_mvp * a_vertex;
 	
-	gl_Position = (u_mvp * a_vertex) + vec4(u_position, 1.0);
 	v_vertex = vec3(gl_Position);
 	v_normal = vec3(u_mvp * vec4(u_normal, 0.0));
 }

@@ -145,7 +145,7 @@ void GameController::render()
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	_scene->render();
+	_scene->renderChildren();
 	_delegate->presentBuffer(GL_RENDERBUFFER);
 	
 	if (_scene->needsUpdateMask()) {
@@ -169,7 +169,7 @@ void GameController::render()
 
 std::shared_ptr<GameObject> GameController::objectAtPoint(GamePoint pt)
 {
-	GLint w{0}, h{0};
+	GLint w, h;
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &h);
 	
@@ -183,26 +183,14 @@ std::shared_ptr<GameObject> GameController::objectAtPoint(GamePoint pt)
 		return nullptr;
 	}
 	else {
-		for (auto &object : _scene->objects()) {
-			glm::vec4 mc = object->maskColor();
-			const GLubyte r = mc[0] * 255.0;
-			const GLubyte g = mc[1] * 255.0;
-			const GLubyte b = mc[2] * 255.0;
-			
-			GLubyte objectMask[] { r, g, b, 0xFF };
-			if (memcmp(touchMask, objectMask, maskSize) == 0) {
-				return object;
-			}
-		}
+		glm::vec4 mc;
+		mc[0] = (float) touchMask[0] / 255.0;
+		mc[1] = (float) touchMask[1] / 255.0;
+		mc[2] = (float) touchMask[2] / 255.0;
+		mc[3] = 1.0;
 		
-		return nullptr;
+		return _scene->objectWithMaskColor(mc);
 	}
-}
-
-
-std::pair<GLfloat, GLfloat> GameController::renderSize()
-{
-	return _renderSize;
 }
 
 

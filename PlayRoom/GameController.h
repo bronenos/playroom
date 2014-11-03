@@ -58,9 +58,8 @@ private:
 	GLuint loadShaderWithType(GLShader shaderType);
 	
 public:
-	std::pair<GLfloat, GLfloat> renderSize();
-	GLuint uniformLocation(const char *name);
-	GLuint attributeLocation(const char *name);
+	virtual GLuint uniformLocation(const char *name);
+	virtual GLuint attributeLocation(const char *name);
 	
 private:
 	GameControllerDelegate *_delegate;

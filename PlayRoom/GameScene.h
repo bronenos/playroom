@@ -19,30 +19,26 @@
 
 class GameSceneDelegate {
 public:
-	virtual std::pair<GLfloat, GLfloat> renderSize() = 0;
 	virtual GLuint uniformLocation(const char *name) = 0;
 	virtual GLuint attributeLocation(const char *name) = 0;
 };
 
 
-class GameScene {
+class GameScene : public GameObject {
 public:
 	GameScene(GameSceneDelegate *delegate);
 	
 	void setRenderSize(std::pair<GLfloat, GLfloat> renderSize);
 	void look(glm::vec3 eye, glm::vec3 subject);
-	void rotate(glm::vec3 angle);
 	void light(glm::vec3 light);
 	
 	bool needsUpdateMask() { return _needsUpdateMask; }
 	void setNeedsUpdateMask(const bool &a) { _needsUpdateMask = a; }
 	
-	void render();
+	virtual glm::vec4 maskColor();
 	void renderMask();
 	
-	std::vector< std::shared_ptr<GameObject> >& objects() { return _objects; }
 	GLuint modelSlot() { return _modelSlot; }
-	GLuint positionSlot() { return _positionSlot; }
 	GLuint vertexSlot() { return _vertexSlot; }
 	GLuint normalSlot() { return _normalSlot; }
 	GLuint colorSlot() { return _colorSlot; }
@@ -55,20 +51,16 @@ private:
 	
 private:
 	GameSceneDelegate *_delegate = NULL;
-	std::vector< std::shared_ptr<GameObject> > _objects;
+	bool _needsUpdateMask = false;
 	
 	GLuint _vpSlot;
 	GLuint _modelSlot;
-	GLuint _positionSlot;
 	GLuint _vertexSlot;
 	GLuint _normalSlot;
 	GLuint _colorSlot;
 	GLuint _lightSlot;
 	GLuint _maskModeSlot;
 	GLuint _maskColorSlot;
-	
-	glm::mat4 _matrix;
-	bool _needsUpdateMask = false;
 };
 
 #endif /* defined(__PlayRoom__GameScene__) */

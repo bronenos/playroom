@@ -15,38 +15,39 @@ void GameObjectPyramid::render()
 	GameObject::render();
 	
 	const GLfloat halfX = _size.x * 0.5;
+	const GLfloat halfY = _size.y * 0.5;
 	const GLfloat halfZ = _size.z * 0.5;
 	
 	GLfloat v[] {
 		// top front
-		0,			_size.y,	0,
-		-halfX,		0,			halfZ,
-		halfX,		0,			halfZ,
+		0,			halfY,		0,
+		-halfX,		-halfY,		halfZ,
+		halfX,		-halfY,		halfZ,
 		
 		// top right
-		0,			_size.y,	0,
-		halfX,		0,			halfZ,
-		halfX,		0,			-halfZ,
+		0,			halfY,		0,
+		halfX,		-halfY,		halfZ,
+		halfX,		-halfY,		-halfZ,
 		
 		// top rare
-		0,			_size.y,	0,
-		halfX,		0,			-halfZ,
-		-halfX,		0,			-halfZ,
+		0,			halfY,		0,
+		halfX,		-halfY,		-halfZ,
+		-halfX,		-halfY,		-halfZ,
 		
 		// top left
-		0,			_size.y,	0,
-		-halfX,		0,			-halfZ,
-		-halfX,		0,			halfZ,
+		0,			halfY,		0,
+		-halfX,		-halfY,		-halfZ,
+		-halfX,		-halfY,		halfZ,
 		
 		// bottom front
-		halfX,		0,			halfZ,
-		-halfX,		0,			halfZ,
-		-halfX,		0,			-halfZ,
+		halfX,		-halfY,		halfZ,
+		-halfX,		-halfY,		halfZ,
+		-halfX,		-halfY,		-halfZ,
 		
 		// top front
-		-halfX,		0,			-halfZ,
-		halfX,		0,			-halfZ,
-		halfX,		0,			halfZ,
+		-halfX,		-halfY,		-halfZ,
+		halfX,		-halfY,		-halfZ,
+		halfX,		-halfY,		halfZ,
 	};
 	
 	const size_t v_size = sizeof(v);

@@ -15,6 +15,7 @@
 #import "GameDataSender.h"
 #import "GameDataReceiver.h"
 #import "GameController.h"
+#import "GameObjectBox.h"
 #import "GameObjectPyramid.h"
 
 
@@ -24,6 +25,7 @@
 
 @property(nonatomic, assign) std::shared_ptr<GameController> gameController;
 @property(nonatomic, assign) std::shared_ptr<GameScene> scene;
+@property(nonatomic, assign) std::shared_ptr<GameObjectBox> boxShape;
 @property(nonatomic, assign) std::shared_ptr<GameObjectPyramid> pyramidShape;
 
 @property(nonatomic, strong) CKRecordID *pyramidID;
@@ -55,6 +57,11 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(onAppWillResignActive)
 													 name:UIApplicationWillResignActiveNotification
+												   object:nil];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(onAppDidBecomeActive)
+													 name:UIApplicationDidBecomeActiveNotification
 												   object:nil];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -96,15 +103,17 @@
 	_gameController->initialize();
 	
 	_scene = _gameController->scene();
-	_scene->look(glm::vec3(0, 25, 130), glm::vec3(0, -10, 0));
-	_scene->light(glm::vec3(25, 80, 10));
+	_scene->look(glm::vec3(0, 25, 100), glm::vec3(0, -10, 0));
+	_scene->light(glm::vec3(85, 50, 0));
 	
 	_pyramidShape = std::make_shared<GameObjectPyramid>(_scene.get());
-	_pyramidShape->setPosition(glm::vec3(0, -20, 0));
 	_pyramidShape->setSize(glm::vec3(40, 55, 40));
 	_pyramidShape->setColor(glm::vec4(0, 0, 0, 0));
-	_pyramidShape->rotate(glm::vec3(0, 0, 0));
-	_scene->objects().push_back(_pyramidShape);
+	
+	_boxShape = std::make_shared<GameObjectBox>(_scene.get());
+	_boxShape->moveBy(glm::vec3(0, 0, 0));
+	_boxShape->addChild(_pyramidShape);
+	_scene->addChild(_boxShape);
 	
 	[self requestCloudRecord];
 }
@@ -127,11 +136,13 @@
 
 - (void)rotateWithPoint:(CGPoint)pt
 {
+	auto r = _gameController->objectAtPoint({250, 200});
+	
 	if (pt.x > 0 && _prevPoint.x > 0) {
 		const float deltaX = 0.02 * (pt.x - _prevPoint.x);
 		const float deltaY = 0.02 * (pt.y - _prevPoint.y);
-		_pyramidShape->rotate(glm::vec3(deltaY, deltaX, 0));
-	}g
+		_pyramidShape->rotateGlobal(glm::vec3(deltaY, deltaX, 0));
+	}
 	
 	_prevPoint = pt;
 }
@@ -218,7 +229,14 @@
 
 - (void)onAppWillResignActive
 {
+	self.displayLink.paused = YES;
 	[self updateCloudDatabase];
+}
+
+
+- (void)onAppDidBecomeActive
+{
+	self.displayLink.paused = NO;
 }
 
 

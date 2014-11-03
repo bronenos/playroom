@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D4157DBB1A05431100A19D39 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4157DBA1A05431100A19D39 /* CloudKit.framework */; };
+		D4157DBE1A08215D00A19D39 /* GameObjectBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4157DBC1A08215D00A19D39 /* GameObjectBox.cpp */; };
 		D435394919F8316E00A3B33B /* GameScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D435394719F8316E00A3B33B /* GameScene.cpp */; };
 		D47C69341A04C454006BA529 /* GameDataSender.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C69331A04C454006BA529 /* GameDataSender.m */; };
 		D47C69371A04C46A006BA529 /* GameDataReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C69361A04C46A006BA529 /* GameDataReceiver.m */; };
@@ -148,6 +149,8 @@
 /* Begin PBXFileReference section */
 		D4157DB91A0542F400A19D39 /* PlayRoom.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PlayRoom.entitlements; sourceTree = "<group>"; };
 		D4157DBA1A05431100A19D39 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		D4157DBC1A08215D00A19D39 /* GameObjectBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameObjectBox.cpp; sourceTree = "<group>"; };
+		D4157DBD1A08215D00A19D39 /* GameObjectBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectBox.h; sourceTree = "<group>"; };
 		D435394719F8316E00A3B33B /* GameScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameScene.cpp; sourceTree = "<group>"; };
 		D435394819F8316E00A3B33B /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		D47C69321A04C454006BA529 /* GameDataSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameDataSender.h; sourceTree = "<group>"; };
@@ -1060,6 +1063,8 @@
 				D435394719F8316E00A3B33B /* GameScene.cpp */,
 				D4DADF5619F846EF006D6E46 /* GameObject.h */,
 				D4DADF5519F846EF006D6E46 /* GameObject.cpp */,
+				D4157DBD1A08215D00A19D39 /* GameObjectBox.h */,
+				D4157DBC1A08215D00A19D39 /* GameObjectBox.cpp */,
 				D4DADF5C19F85083006D6E46 /* GameObjectPyramid.h */,
 				D4DADF5B19F85083006D6E46 /* GameObjectPyramid.cpp */,
 				D4D6478519F6BB57002B6BAF /* vertex.glsl */,
@@ -1307,6 +1312,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4157DBE1A08215D00A19D39 /* GameObjectBox.cpp in Sources */,
 				D4DBFA1B19F58DEB002A5306 /* main.m in Sources */,
 				D4D6478419F5A773002B6BAF /* GameView.m in Sources */,
 				D47C69371A04C46A006BA529 /* GameDataReceiver.m in Sources */,

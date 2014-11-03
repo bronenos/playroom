@@ -26,7 +26,13 @@ void GameObject::setMaskMode(const bool &a)
 }
 
 
-void GameObject::rotate(glm::vec3 angles)
+void GameObject::moveBy(const glm::vec3 &move)
+{
+	_m = glm::translate(_m, move);
+}
+
+
+void GameObject::rotate(const glm::vec3 &angles)
 {
 	if (angles[0] != 0) {
 		_m = glm::rotate(_m, angles[0], glm::vec3(1, 0, 0));
@@ -44,11 +50,24 @@ void GameObject::rotate(glm::vec3 angles)
 }
 
 
-void GameObject::render()
+void GameObject::rotateGlobal(const glm::vec3 &angles)
 {
-	glUniformMatrix4fv(_scene->modelSlot(), 1, GL_FALSE, &_m[0][0]);
-	glUniform3fv(_scene->positionSlot(), 1, &_position[0]);
-	glUniform4fv(_scene->colorSlot(), 1, &_color[0]);
+	if (angles[0] != 0) {
+		const glm::vec4 axis = glm::inverse(_m) * glm::vec4(1, 0, 0, 0);
+		_m = glm::rotate(_m, angles[0], glm::vec3(axis));
+	}
+	
+	if (angles[1] != 0) {
+		const glm::vec4 axis = glm::inverse(_m) * glm::vec4(0, 1, 0, 0);
+		_m = glm::rotate(_m, angles[1], glm::vec3(axis));
+	}
+	
+	if (angles[2] != 0) {
+		const glm::vec4 axis = glm::inverse(_m) * glm::vec4(0, 0, 1, 0);
+		_m = glm::rotate(_m, angles[2], glm::vec3(axis));
+	}
+	
+	_scene->setNeedsUpdateMask(true);
 }
 
 
@@ -74,4 +93,61 @@ glm::vec3 GameObject::calculateNormalVector(GLfloat *v)
 	c[z] = t1[x] * t2[y] - t1[y] * t2[x];
 	
 	return glm::vec3(c[x], c[y], c[z]);
+}
+
+
+void GameObject::render()
+{
+	_rm = _m * _pm;
+	glUniformMatrix4fv(_scene->modelSlot(), 1, GL_FALSE, &_rm[0][0]);
+	glUniform4fv(_scene->colorSlot(), 1, &_color[0]);
+}
+
+
+void GameObject::renderChildren()
+{
+	for (auto it : _children) {
+		it->_pm = _rm;
+		it->render();
+		it->renderChildren();
+	}
+}
+
+
+void GameObject::renderMask()
+{
+	this->setMaskColor(_scene->maskColor());
+	this->setMaskMode(true);
+	
+	this->render();
+	this->renderChildrenMask();
+	
+	this->setMaskMode(false);
+}
+
+
+void GameObject::renderChildrenMask()
+{
+	for (auto it : _children) {
+		it->_pm = _rm;
+		it->renderMask();
+		it->renderChildrenMask();
+	}
+}
+
+
+std::shared_ptr<GameObject> GameObject::objectWithMaskColor(const glm::vec4 &mc)
+{
+	for (auto child : this->_children) {
+		if (child->maskColor() == mc) {
+			return child;
+		}
+		
+		auto sub = child->objectWithMaskColor(mc);
+		if (sub) {
+			return sub;
+		}
+	}
+	
+	return nullptr;
 }
