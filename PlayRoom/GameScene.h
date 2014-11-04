@@ -19,39 +19,39 @@
 
 class GameSceneDelegate {
 public:
-	virtual GLuint uniformLocation(const char *name) = 0;
-	virtual GLuint attributeLocation(const char *name) = 0;
+	virtual GLuint uniformLocation(const char *name) const = 0;
+	virtual GLuint attributeLocation(const char *name) const = 0;
 };
 
 
 class GameScene : public GameObject {
 public:
-	GameScene(GameSceneDelegate *delegate);
+	GameScene(const GameSceneDelegate *delegate);
 	
-	void setRenderSize(std::pair<GLfloat, GLfloat> renderSize);
-	void look(glm::vec3 eye, glm::vec3 subject);
-	void light(glm::vec3 light);
+	void setRenderSize(const std::pair<GLfloat, GLfloat> renderSize);
+	void look(const glm::vec3 &eye, const glm::vec3 &subject);
+	void light(const glm::vec3 &light);
 	
 	bool needsUpdateMask() { return _needsUpdateMask; }
-	void setNeedsUpdateMask(const bool &a) { _needsUpdateMask = a; }
+	void setNeedsUpdateMask(const bool &a) const { _needsUpdateMask = a; }
 	
-	glm::vec4 generateMaskColor();
+	glm::vec4 generateMaskColor() const;
 	void renderMask();
 	
-	GLuint modelSlot() { return _modelSlot; }
-	GLuint vertexSlot() { return _vertexSlot; }
-	GLuint normalSlot() { return _normalSlot; }
-	GLuint colorSlot() { return _colorSlot; }
-	GLuint lightSlot() { return _lightSlot; }
-	GLuint maskModeSlot() { return _maskModeSlot; }
-	GLuint maskColorSlot() { return _maskColorSlot; }
+	GLuint modelSlot() const { return _modelSlot; }
+	GLuint vertexSlot() const { return _vertexSlot; }
+	GLuint normalSlot() const { return _normalSlot; }
+	GLuint colorSlot() const { return _colorSlot; }
+	GLuint lightSlot() const { return _lightSlot; }
+	GLuint maskModeSlot() const { return _maskModeSlot; }
+	GLuint maskColorSlot() const { return _maskColorSlot; }
 	
 private:
 	void drawPyramid();
 	
 private:
-	GameSceneDelegate *_delegate = NULL;
-	bool _needsUpdateMask = false;
+	const GameSceneDelegate *_delegate = NULL;
+	mutable bool _needsUpdateMask = false;
 	
 	GLuint _vpSlot;
 	GLuint _modelSlot;

@@ -15,7 +15,6 @@
 @interface GameDataReceiver() <CBCentralManagerDelegate, CBPeripheralDelegate>
 @property(nonatomic, strong) CBCentralManager *manager;
 @property(nonatomic, strong) CBPeripheral *peripheral;
-@property(nonatomic, weak) id<GameDataReceiverDelegate> delegate;
 @end
 
 

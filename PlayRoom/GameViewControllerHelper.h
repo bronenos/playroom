@@ -15,7 +15,7 @@
 
 class GameViewControllerHelper : public GameControllerDelegate {
 public:
-	GameViewControllerHelper(GameViewController * __strong &viewController);
+	GameViewControllerHelper(GameViewController * const __strong &viewController);
 	
 protected:
 	virtual std::pair<float, float> renderSize();
@@ -24,7 +24,7 @@ protected:
 	virtual void presentBuffer(long bufferID);
 	
 private:
-	GameViewController *_viewController;
+	__weak GameViewController *_viewController;
 };
 
 #endif /* defined(__PlayRoom__GameViewControllerHelper__) */

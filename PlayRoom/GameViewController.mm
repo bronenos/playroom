@@ -19,6 +19,11 @@
 #import "GameObjectPyramid.h"
 
 
+static NSString * const kCloudRecordType		= @"config";
+static NSString * const kCloudRecordName		= @"pyramid";
+static NSString * const kCloudRecordMatrixKey	= @"matrix";
+
+
 @interface GameViewController() <GameDataReceiverDelegate>
 @property(nonatomic, strong) EAGLContext *glContext;
 @property(nonatomic, strong) CADisplayLink *displayLink;
@@ -34,6 +39,7 @@
 @property(nonatomic, strong) GameDataSender *dataSender;
 @property(nonatomic, strong) GameDataReceiver *dataReceiver;
 
+- (void)configure;
 - (void)setupScene;
 - (void)render:(CADisplayLink *)link;
 - (void)rotateWithPoint:(CGPoint)pt;
@@ -59,41 +65,69 @@
 }
 
 #pragma mark - Memory
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-	if ((self = [super initWithCoder:aDecoder])) {
-		_glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-		[EAGLContext setCurrentContext:_glContext];
-		
-		_gameController = std::make_shared<GameController>(new GameViewControllerHelper(self));
-		self.dataSender = [[GameDataSender alloc] init];
-		self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
-		
-		self.pyramidID = [[CKRecordID alloc] initWithRecordName:@"pyramid"];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(onAppWillResignActive)
-													 name:UIApplicationWillResignActiveNotification
-												   object:nil];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(onAppDidBecomeActive)
-													 name:UIApplicationDidBecomeActiveNotification
-												   object:nil];
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(onAppWillTerminate)
-													 name:UIApplicationWillTerminateNotification
-												   object:nil];
+	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+		[self configure];
 	}
 	
 	return self;
 }
 
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+	if ((self = [super initWithCoder:aDecoder])) {
+		[self configure];
+	}
+	
+	return self;
+}
+
+
+- (void)configure
+{
+	_glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+	[EAGLContext setCurrentContext:_glContext];
+	
+	_gameController = std::make_shared<GameController>(new GameViewControllerHelper(self));
+	self.dataSender = [[GameDataSender alloc] init];
+	self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
+	
+	self.pyramidID = [[CKRecordID alloc] initWithRecordName:kCloudRecordName];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(onAppWillResignActive)
+												 name:UIApplicationWillResignActiveNotification
+											   object:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(onAppDidBecomeActive)
+												 name:UIApplicationDidBecomeActiveNotification
+											   object:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(onAppWillTerminate)
+												 name:UIApplicationWillTerminateNotification
+											   object:nil];
+}
+
+
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	self.dataSender = nil;
+	self.dataReceiver.delegate = nil;
+	self.dataReceiver = nil;
+	
+	_scene.reset();
+	_boxShape.reset();
+	_pyramidShape.reset();
+	_gameController.reset();
+	
+	[EAGLContext setCurrentContext:nil];
+	self.glContext = nil;
 }
 
 
@@ -130,6 +164,16 @@
 	
 	self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
 	[self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+}
+
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+	[super viewDidDisappear:animated];
+	
+	[self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	self.displayLink.paused = YES;
+	self.displayLink = nil;
 }
 
 
@@ -172,7 +216,7 @@
 - (NSMutableData *)pyramidMatrix
 {
 	float *objm = &_pyramidShape->m()[0][0];
-	return [NSMutableData dataWithBytesNoCopy:objm length:16 * sizeof(float)];
+	return [NSMutableData dataWithBytesNoCopy:objm length:16 * sizeof(float) freeWhenDone:NO];
 }
 
 
@@ -186,7 +230,7 @@
 			__strong typeof(weakSelf) strongSelf = weakSelf;
 			if (strongSelf->_wasMoved == NO) {
 				strongSelf.pyramidRecord = record;
-				[[strongSelf pyramidMatrix] setData:record[@"matrix"]];;
+				[[strongSelf pyramidMatrix] setData:record[kCloudRecordMatrixKey]];;
 			}
 		}
 	}];
@@ -196,10 +240,10 @@
 - (void)updateCloudRecord
 {
 	if (self.pyramidRecord == nil) {
-		self.pyramidRecord = [[CKRecord alloc] initWithRecordType:@"config" recordID:self.pyramidID];
+		self.pyramidRecord = [[CKRecord alloc] initWithRecordType:kCloudRecordType recordID:self.pyramidID];
 	}
 	
-	self.pyramidRecord[@"matrix"] = [self pyramidMatrix];
+	self.pyramidRecord[kCloudRecordMatrixKey] = [self pyramidMatrix];
 }
 
 

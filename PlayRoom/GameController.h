@@ -42,6 +42,7 @@ public:
 class GameController : public GameSceneDelegate {
 public:
 	GameController(GameControllerDelegate *delegate);
+	~GameController();
 	
 	void initialize();
 	void reconfigure();
@@ -54,12 +55,13 @@ public:
 	std::shared_ptr<GameObject> objectAtPoint(GamePoint pt);
 	
 private:
+	void setupBuffers();
 	void loadShaders();
 	GLuint loadShaderWithType(GLShader shaderType);
 	
 public:
-	virtual GLuint uniformLocation(const char *name);
-	virtual GLuint attributeLocation(const char *name);
+	virtual GLuint uniformLocation(const char *name) const;
+	virtual GLuint attributeLocation(const char *name) const;
 	
 private:
 	GameControllerDelegate *_delegate;

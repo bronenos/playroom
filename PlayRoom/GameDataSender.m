@@ -48,17 +48,19 @@ NSString * const GameDataSenderMatrixUUID = @"180F";
 		props |= CBCharacteristicPropertyRead;
 		props |= CBCharacteristicPropertyNotify;
 		
-		self.matrixItem = [[CBMutableCharacteristic alloc] initWithType:CBUUID(GameDataSenderMatrixUUID)
-															 properties:props
-																  value:nil
-															permissions:CBAttributePermissionsReadable];
-		
-		CBMutableService *service = [[CBMutableService alloc] initWithType:CBUUID(GameDataSenderServiceUUID)
-																   primary:YES];
-		service.characteristics = @[ self.matrixItem ];
-		
-		[peripheral removeAllServices];
-		[peripheral addService:service];
+		if (self.matrixItem == nil) {
+			self.matrixItem = [[CBMutableCharacteristic alloc] initWithType:CBUUID(GameDataSenderMatrixUUID)
+																 properties:props
+																	  value:nil
+																permissions:CBAttributePermissionsReadable];
+			
+			CBMutableService *service = [[CBMutableService alloc] initWithType:CBUUID(GameDataSenderServiceUUID)
+																	   primary:YES];
+			service.characteristics = @[ self.matrixItem ];
+			
+			[peripheral removeAllServices];
+			[peripheral addService:service];
+		}
 	}
 }
 

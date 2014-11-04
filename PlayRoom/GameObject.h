@@ -21,13 +21,13 @@ class GameScene;
 
 class GameObject {
 public:
-	GameObject(GameScene *scene);
+	GameObject(const GameScene *scene);
 	
 	void moveBy(const glm::vec3 &move);
 	void rotate(const glm::vec3 &angles);
 	void rotateGlobal(const glm::vec3 &angles);
 	
-	static glm::vec3 calculateNormalVector(GLfloat *v);
+	static glm::vec3 calculateNormalVector(const GLfloat *v);
 	
 	virtual void render();
 	virtual void renderChildren();
@@ -46,19 +46,19 @@ public:
 	void setColor(const glm::vec4 &a) { _color = a; }
 	void setMaskMode(const bool &a);
 	
-	void addChild(std::shared_ptr<GameObject> child) {
+	void addChild(const std::shared_ptr<GameObject> &child) {
 		_children.push_back(child);
 	}
 	
-	void removeChild(std::shared_ptr<GameObject> child) {
-		auto it = std::find(_children.begin(), _children.end(), child);
+	void removeChild(const std::shared_ptr<GameObject> &child) {
+		const auto it = std::find(_children.begin(), _children.end(), child);
 		if (it < _children.end()) {
 			_children.erase(it);
 		}
 	}
 	
 protected:
-	GameScene *_scene;
+	const GameScene *_scene;
 	std::vector<std::shared_ptr<GameObject>> _children;
 	
 	glm::mat4 _m = glm::mat4(1.0);
@@ -68,7 +68,7 @@ protected:
 	glm::vec3 _position = glm::vec3(0, 0, 0);
 	glm::vec3 _size = glm::vec3(1, 1, 1);
 	glm::vec4 _color = glm::vec4(0, 0, 0, 1.0);
-	glm::vec4 _maskColor = glm::vec4(1.0, 0, 0, 1.0);
+	mutable glm::vec4 _maskColor = glm::vec4(1.0, 0, 0, 1.0);
 };
 
 #endif /* defined(__PlayRoom__GameObject__) */

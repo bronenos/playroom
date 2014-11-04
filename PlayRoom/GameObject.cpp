@@ -10,7 +10,7 @@
 #include "GameScene.h"
 
 
-GameObject::GameObject(GameScene *scene)
+GameObject::GameObject(const GameScene *scene)
 : _scene(scene)
 {
 	this->setMaskMode(false);
@@ -78,7 +78,7 @@ void GameObject::rotateGlobal(const glm::vec3 &angles)
 }
 
 
-glm::vec3 GameObject::calculateNormalVector(GLfloat *v)
+glm::vec3 GameObject::calculateNormalVector(const GLfloat *v)
 {
 #	define x 0
 #	define y 1
@@ -149,7 +149,7 @@ std::shared_ptr<GameObject> GameObject::objectWithMaskColor(const glm::vec4 &mc)
 			return child;
 		}
 		
-		auto sub = child->objectWithMaskColor(mc);
+		const auto sub = child->objectWithMaskColor(mc);
 		if (sub) {
 			return sub;
 		}

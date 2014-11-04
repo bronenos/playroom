@@ -21,5 +21,7 @@
 
 
 @interface GameDataReceiver : NSObject
+@property(nonatomic, weak) id<GameDataReceiverDelegate> delegate;
+
 - (instancetype)initWithDelegate:(id<GameDataReceiverDelegate>)delegate;
 @end

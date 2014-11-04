@@ -16,9 +16,56 @@ GameController::GameController(GameControllerDelegate *delegate)
 }
 
 
+GameController::~GameController()
+{
+	if (_mainFrameBuffer) {
+		glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, 0);
+		
+		glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBuffer);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDeleteFramebuffers(1, &_mainFrameBuffer);
+	}
+	
+	if (_colorRenderBuffer) {
+		glDeleteRenderbuffers(1, &_colorRenderBuffer);
+	}
+	
+	if (_depthRenderBuffer) {
+		glDeleteRenderbuffers(1, &_depthRenderBuffer);
+	}
+	
+	if (_vertexBuffer) {
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDeleteBuffers(1, &_vertexBuffer);
+	}
+	
+	if (_shaderProgram) {
+		glUseProgram(0);
+		glDeleteProgram(_shaderProgram);
+	}
+}
+
+
 void GameController::initialize()
 {
-	GLint w{0}, h{0};
+	this->setupBuffers();
+	this->loadShaders();
+	this->reconfigure();
+	
+	_scene = std::make_shared<GameScene>(this);
+	
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+}
+
+
+void GameController::setupBuffers()
+{
+	GLint w = 0, h = 0;
 	
 	glGenFramebuffers(1, &_mainFrameBuffer);
 	if (_mainFrameBuffer) {
@@ -49,16 +96,6 @@ void GameController::initialize()
 	if (_vertexBuffer) {
 		glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
 	}
-	
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	
-	this->loadShaders();
-	this->reconfigure();
-	
-	_scene = std::make_shared<GameScene>(this);
 }
 
 
@@ -159,7 +196,7 @@ void GameController::render()
 		
 		_scene->renderMask();
 		
-		GLint w{0}, h{0};
+		GLint w, h;
 		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
 		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &h);
 		glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, &_maskData[0]);
@@ -193,13 +230,13 @@ std::shared_ptr<GameObject> GameController::objectAtPoint(GamePoint pt)
 }
 
 
-GLuint GameController::uniformLocation(const char *name)
+GLuint GameController::uniformLocation(const char *name) const
 {
 	return glGetUniformLocation(_shaderProgram, name);
 }
 
 
-GLuint GameController::attributeLocation(const char *name)
+GLuint GameController::attributeLocation(const char *name) const
 {
 	return glGetAttribLocation(_shaderProgram, name);
 }

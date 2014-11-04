@@ -10,7 +10,7 @@
 #include "GameViewControllerHelper.h"
 
 
-GameViewControllerHelper::GameViewControllerHelper(GameViewController * __strong &viewController)
+GameViewControllerHelper::GameViewControllerHelper(GameViewController * const __strong &viewController)
 : _viewController(viewController)
 {
 }

@@ -10,7 +10,7 @@
 #include "GameScene.h"
 
 
-GameScene::GameScene(GameSceneDelegate *delegate)
+GameScene::GameScene(const GameSceneDelegate *delegate)
 : GameObject(this)
 , _delegate(delegate)
 {
@@ -27,7 +27,7 @@ GameScene::GameScene(GameSceneDelegate *delegate)
 }
 
 
-void GameScene::look(glm::vec3 eye, glm::vec3 subject)
+void GameScene::look(const glm::vec3 &eye, const glm::vec3 &subject)
 {
 	GLint w, h;
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
@@ -43,13 +43,13 @@ void GameScene::look(glm::vec3 eye, glm::vec3 subject)
 }
 
 
-void GameScene::light(glm::vec3 light)
+void GameScene::light(const glm::vec3 &light)
 {
 	glUniform3fv(this->lightSlot(), 1, &light[0]);
 }
 
 
-glm::vec4 GameScene::generateMaskColor()
+glm::vec4 GameScene::generateMaskColor() const
 {
 	const float step = 1.0 / 255.0;
 	
