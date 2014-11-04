@@ -31,10 +31,10 @@ NSString * const GameDataSenderMatrixUUID = @"180F";
 }
 
 
-- (void)sendMatrix:(const float[16])mat
+- (void)sendMatrix:(NSData *)data
 {
 	if (self.matrixItem) {
-		[self.manager updateValue:[NSData dataWithBytes:mat length:16 * sizeof(CGFloat)]
+		[self.manager updateValue:data
 				forCharacteristic:self.matrixItem
 			 onSubscribedCentrals:nil];
 	}

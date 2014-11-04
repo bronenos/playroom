@@ -111,8 +111,7 @@
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
 	if ([[characteristic.UUID UUIDString] isEqualToString:GameDataSenderMatrixUUID]) {
-		CGFloat *mat = (CGFloat *) characteristic.value.bytes;
-		[self.delegate dataReceiver:self syncMatrix:mat];
+		[self.delegate dataReceiver:self syncMatrix:characteristic.value];
 	}
 }
 @end

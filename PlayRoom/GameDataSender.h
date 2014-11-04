@@ -18,5 +18,5 @@ extern NSString * const GameDataSenderMatrixUUID;
 
 
 @interface GameDataSender : NSObject
-- (void)sendMatrix:(const float[16])mat;
+- (void)sendMatrix:(NSData *)data;
 @end

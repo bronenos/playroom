@@ -49,20 +49,20 @@ void GameScene::light(glm::vec3 light)
 }
 
 
-glm::vec4 GameScene::maskColor()
+glm::vec4 GameScene::generateMaskColor()
 {
 	const float step = 1.0 / 255.0;
 	
-	_maskColor[2] += step;
+	_maskColor.b += step;
 	
-	if (_maskColor[2] > 1.0) {
-		_maskColor[2] = 0;
-		_maskColor[1] += step;
+	if (_maskColor.b > 1.0) {
+		_maskColor.b = 0;
+		_maskColor.g += step;
 	}
 	
-	if (_maskColor[1] > 1.0) {
-		_maskColor[1] = 0;
-		_maskColor[0] += step;
+	if (_maskColor.g > 1.0) {
+		_maskColor.g = 0;
+		_maskColor.r += step;
 	}
 	
 	return _maskColor;

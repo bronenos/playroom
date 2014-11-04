@@ -184,10 +184,9 @@ std::shared_ptr<GameObject> GameController::objectAtPoint(GamePoint pt)
 	}
 	else {
 		glm::vec4 mc;
-		mc[0] = (float) touchMask[0] / 255.0;
-		mc[1] = (float) touchMask[1] / 255.0;
-		mc[2] = (float) touchMask[2] / 255.0;
-		mc[3] = 1.0;
+		mc.r = (float) touchMask[0] / 255.0;
+		mc.g = (float) touchMask[1] / 255.0;
+		mc.b = (float) touchMask[2] / 255.0;
 		
 		return _scene->objectWithMaskColor(mc);
 	}

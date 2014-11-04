@@ -40,13 +40,11 @@ public:
 	glm::vec3 position() { return _position; }
 	glm::vec3 size() { return _size; }
 	glm::vec4 color() { return _color; }
-	bool maskMode() { return _maskMode; }
-	virtual glm::vec4 maskColor() { return _maskColor; }
+	glm::vec4 maskColor() { return _maskColor; }
 	
 	void setSize(const glm::vec3 &a) { _size = a; }
 	void setColor(const glm::vec4 &a) { _color = a; }
 	void setMaskMode(const bool &a);
-	void setMaskColor(const glm::vec4 &a) { _maskColor = a; }
 	
 	void addChild(std::shared_ptr<GameObject> child) {
 		_children.push_back(child);
@@ -63,9 +61,6 @@ protected:
 	GameScene *_scene;
 	std::vector<std::shared_ptr<GameObject>> _children;
 	
-	int _maskMode = 0;
-	glm::vec4 _maskColor = glm::vec4(1.0, 0, 0, 1.0);
-	
 	glm::mat4 _m = glm::mat4(1.0);
 	glm::mat4 _pm = glm::mat4(1.0);
 	glm::mat4 _rm;
@@ -73,6 +68,7 @@ protected:
 	glm::vec3 _position = glm::vec3(0, 0, 0);
 	glm::vec3 _size = glm::vec3(1, 1, 1);
 	glm::vec4 _color = glm::vec4(0, 0, 0, 1.0);
+	glm::vec4 _maskColor = glm::vec4(1.0, 0, 0, 1.0);
 };
 
 #endif /* defined(__PlayRoom__GameObject__) */

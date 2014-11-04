@@ -16,7 +16,7 @@
 @optional
 - (void)dataReceiverDidConnect:(GameDataReceiver *)dataReceiver;
 @required
-- (void)dataReceiver:(GameDataReceiver *)dataReceiver syncMatrix:(CGFloat[16])mat;
+- (void)dataReceiver:(GameDataReceiver *)dataReceiver syncMatrix:(NSData *)data;
 @end
 
 

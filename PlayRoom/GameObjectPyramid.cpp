@@ -27,7 +27,7 @@ void GameObjectPyramid::render()
 		// top right
 		0,			halfY,		0,
 		halfX,		-halfY,		halfZ,
-		halfX,		-halfY,		-halfZ,
+		halfX,		-hgalfY,		-halfZ,
 		
 		// top rare
 		0,			halfY,		0,

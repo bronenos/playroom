@@ -19,9 +19,16 @@ GameObject::GameObject(GameScene *scene)
 
 void GameObject::setMaskMode(const bool &a)
 {
-	_maskMode = a;
+	const GLint mode = a ? 1 : 0;
 	
-	glUniform1iv(_scene->maskModeSlot(), 1, &_maskMode);
+	if (a) {
+		_maskColor = _scene->generateMaskColor();
+	}
+	else {
+		_maskColor[3] = 0;
+	}
+	
+	glUniform1iv(_scene->maskModeSlot(), 1, &mode);
 	glUniform4fv(_scene->maskColorSlot(), 1, &_maskColor[0]);
 }
 
@@ -34,16 +41,16 @@ void GameObject::moveBy(const glm::vec3 &move)
 
 void GameObject::rotate(const glm::vec3 &angles)
 {
-	if (angles[0] != 0) {
-		_m = glm::rotate(_m, angles[0], glm::vec3(1, 0, 0));
+	if (angles.x != 0) {
+		_m = glm::rotate(_m, angles.x, glm::vec3(1, 0, 0));
 	}
 	
-	if (angles[1] != 0) {
-		_m = glm::rotate(_m, angles[1], glm::vec3(0, 1, 0));
+	if (angles.y != 0) {
+		_m = glm::rotate(_m, angles.y, glm::vec3(0, 1, 0));
 	}
 	
-	if (angles[2] != 0) {
-		_m = glm::rotate(_m, angles[2], glm::vec3(0, 0, 1));
+	if (angles.z != 0) {
+		_m = glm::rotate(_m, angles.z, glm::vec3(0, 0, 1));
 	}
 	
 	_scene->setNeedsUpdateMask(true);
@@ -52,19 +59,19 @@ void GameObject::rotate(const glm::vec3 &angles)
 
 void GameObject::rotateGlobal(const glm::vec3 &angles)
 {
-	if (angles[0] != 0) {
+	if (angles.x != 0) {
 		const glm::vec4 axis = glm::inverse(_m) * glm::vec4(1, 0, 0, 0);
-		_m = glm::rotate(_m, angles[0], glm::vec3(axis));
+		_m = glm::rotate(_m, angles.x, glm::vec3(axis));
 	}
 	
-	if (angles[1] != 0) {
+	if (angles.y != 0) {
 		const glm::vec4 axis = glm::inverse(_m) * glm::vec4(0, 1, 0, 0);
-		_m = glm::rotate(_m, angles[1], glm::vec3(axis));
+		_m = glm::rotate(_m, angles.y, glm::vec3(axis));
 	}
 	
-	if (angles[2] != 0) {
+	if (angles.z != 0) {
 		const glm::vec4 axis = glm::inverse(_m) * glm::vec4(0, 0, 1, 0);
-		_m = glm::rotate(_m, angles[2], glm::vec3(axis));
+		_m = glm::rotate(_m, angles.z, glm::vec3(axis));
 	}
 	
 	_scene->setNeedsUpdateMask(true);
@@ -116,7 +123,6 @@ void GameObject::renderChildren()
 
 void GameObject::renderMask()
 {
-	this->setMaskColor(_scene->maskColor());
 	this->setMaskMode(true);
 	
 	this->render();

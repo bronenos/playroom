@@ -23,9 +23,9 @@ enum class GLShader {
 struct GamePoint {
 	int x, y;
 	
-	GamePoint(double xx, double yy)
-	: x(xx)
-	, y(yy) {
+	GamePoint(double x_, double y_)
+	: x(x_)
+	, y(y_) {
 	}
 };
 

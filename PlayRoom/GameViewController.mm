@@ -33,6 +33,22 @@
 
 @property(nonatomic, strong) GameDataSender *dataSender;
 @property(nonatomic, strong) GameDataReceiver *dataReceiver;
+
+- (void)setupScene;
+- (void)render:(CADisplayLink *)link;
+- (void)rotateWithPoint:(CGPoint)pt;
+
+- (NSMutableData *)pyramidMatrix;
+
+- (void)requestCloudRecord;
+- (void)updateCloudRecord;
+- (void)updateCloudDatabase;
+
+- (void)doRotate:(UIGestureRecognizer *)rec;
+
+- (void)onAppWillResignActive;
+- (void)onAppDidBecomeActive;
+- (void)onAppWillTerminate;
 @end
 
 
@@ -42,6 +58,7 @@
 	BOOL _wasMoved;
 }
 
+#pragma mark - Memory
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	if ((self = [super initWithCoder:aDecoder])) {
@@ -80,6 +97,7 @@
 }
 
 
+#pragma mark - View
 - (void)loadView
 {
 	self.view = [GameView new];
@@ -101,20 +119,7 @@
 	[super viewWillAppear:animated];
 	
 	_gameController->initialize();
-	
-	_scene = _gameController->scene();
-	_scene->look(glm::vec3(0, 25, 100), glm::vec3(0, -10, 0));
-	_scene->light(glm::vec3(85, 50, 0));
-	
-	_pyramidShape = std::make_shared<GameObjectPyramid>(_scene.get());
-	_pyramidShape->setSize(glm::vec3(40, 55, 40));
-	_pyramidShape->setColor(glm::vec4(0, 0, 0, 0));
-	
-	_boxShape = std::make_shared<GameObjectBox>(_scene.get());
-	_boxShape->moveBy(glm::vec3(0, 0, 0));
-	_boxShape->addChild(_pyramidShape);
-	_scene->addChild(_boxShape);
-	
+	[self setupScene];
 	[self requestCloudRecord];
 }
 
@@ -128,6 +133,24 @@
 }
 
 
+#pragma mark - Internal
+- (void)setupScene
+{
+	_scene = _gameController->scene();
+	_scene->look(glm::vec3(0, 25, 100), glm::vec3(0, -10, 0));
+	_scene->light(glm::vec3(85, 50, 0));
+	
+	_pyramidShape = std::make_shared<GameObjectPyramid>(_scene.get());
+	_pyramidShape->setSize(glm::vec3(40, 55, 40));
+	_pyramidShape->setColor(glm::vec4(0, 0, 0, 0));
+	
+	_boxShape = std::make_shared<GameObjectBox>(_scene.get());
+	_boxShape->moveBy(glm::vec3(0, 0, 0));
+	_boxShape->addChild(_pyramidShape);
+	_scene->addChild(_boxShape);
+}
+
+
 - (void)render:(CADisplayLink *)link
 {
 	_gameController->render();
@@ -136,8 +159,6 @@
 
 - (void)rotateWithPoint:(CGPoint)pt
 {
-	auto r = _gameController->objectAtPoint({250, 200});
-	
 	if (pt.x > 0 && _prevPoint.x > 0) {
 		const float deltaX = 0.02 * (pt.x - _prevPoint.x);
 		const float deltaY = 0.02 * (pt.y - _prevPoint.y);
@@ -145,6 +166,13 @@
 	}
 	
 	_prevPoint = pt;
+}
+
+
+- (NSMutableData *)pyramidMatrix
+{
+	float *objm = &_pyramidShape->m()[0][0];
+	return [NSMutableData dataWithBytesNoCopy:objm length:16 * sizeof(float)];
 }
 
 
@@ -158,10 +186,7 @@
 			__strong typeof(weakSelf) strongSelf = weakSelf;
 			if (strongSelf->_wasMoved == NO) {
 				strongSelf.pyramidRecord = record;
-				
-				NSData *data = record[@"matrix"];
-				float *objm = &strongSelf.pyramidShape->m()[0][0];
-				memcpy(objm, data.bytes, 16 * sizeof(float));
+				[[strongSelf pyramidMatrix] setData:record[@"matrix"]];;
 			}
 		}
 	}];
@@ -174,8 +199,7 @@
 		self.pyramidRecord = [[CKRecord alloc] initWithRecordType:@"config" recordID:self.pyramidID];
 	}
 	
-	const float *objm = &_pyramidShape->m()[0][0];
-	self.pyramidRecord[@"matrix"] = [NSData dataWithBytes:objm length:16 * sizeof(float)];
+	self.pyramidRecord[@"matrix"] = [self pyramidMatrix];
 }
 
 
@@ -188,6 +212,7 @@
 }
 
 
+#pragma mark - User
 - (void)doRotate:(UIGestureRecognizer *)rec
 {
 	_wasMoved = YES;
@@ -198,9 +223,7 @@
 	}
 	
 	[self rotateWithPoint:pt];
-	
-	const float *objm = &_pyramidShape->m()[0][0];
-	[self.dataSender sendMatrix:objm];
+	[self.dataSender sendMatrix:[self pyramidMatrix]];
 	
 	if (rec.state == UIGestureRecognizerStateEnded) {
 		[self updateCloudRecord];
@@ -208,22 +231,17 @@
 }
 
 
-//- (void)dataReceiverDidConnect:(GameDataReceiver *)dataReceiver
-//{
-//}
-
-
-- (void)dataReceiver:(id)dataReceiver syncMatrix:(CGFloat *)mat
+#pragma mark - GameDataReceiverDelegate
+- (void)dataReceiver:(id)dataReceiver syncMatrix:(NSData *)data
 {
 	_wasMoved = YES;
 	
-	float *objm = &_pyramidShape->m()[0][0];
-	memcpy(objm, mat, 16 * sizeof(float));
-	
+	[[self pyramidMatrix] setData:data];
 	[self updateCloudRecord];
 }
 
 
+#pragma mark - Events
 - (void)onAppWillResignActive
 {
 	self.displayLink.paused = YES;

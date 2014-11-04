@@ -35,7 +35,7 @@ public:
 	bool needsUpdateMask() { return _needsUpdateMask; }
 	void setNeedsUpdateMask(const bool &a) { _needsUpdateMask = a; }
 	
-	virtual glm::vec4 maskColor();
+	glm::vec4 generateMaskColor();
 	void renderMask();
 	
 	GLuint modelSlot() { return _modelSlot; }
