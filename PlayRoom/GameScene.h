@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <sys/time.h>
 #include "GameObject.h"
 
 
@@ -32,8 +33,8 @@ public:
 	void look(const glm::vec3 &eye, const glm::vec3 &subject);
 	void light(const glm::vec3 &light);
 	
-	bool needsUpdateMask() { return _needsUpdateMask; }
-	void setNeedsUpdateMask(const bool &a) const { _needsUpdateMask = a; }
+	bool needsUpdateMask();
+	void setNeedsUpdateMask(const bool &a) const;
 	
 	glm::vec4 generateMaskColor() const;
 	void renderMask();
@@ -51,7 +52,7 @@ private:
 	
 private:
 	GameSceneDelegate *_delegate = NULL;
-	mutable bool _needsUpdateMask = false;
+	mutable timeval _needsUpdateMaskTime { 0, 0 };
 	
 	GLuint _vpSlot;
 	GLuint _modelSlot;

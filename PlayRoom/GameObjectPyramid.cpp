@@ -55,7 +55,7 @@ void GameObjectPyramid::render()
 	glBufferData(GL_ARRAY_BUFFER, v_size, v, GL_STATIC_DRAW);
 	glVertexAttribPointer(_scene->vertexSlot(), 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	
-	size_t i = 0;
+	GLint i = 0;
 	size_t cnt = v_top_count;
 	for (; i<cnt; i++) {
 		const glm::vec3 n = GameObject::calculateNormalVector(v + i * 9);

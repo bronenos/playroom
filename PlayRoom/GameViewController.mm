@@ -46,12 +46,11 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 - (void)rotateWithPoint:(CGPoint)pt;
 
 - (GameObjectData *)pyramidMatrix;
-
-- (void)_updateSceneMask;
 - (void)updateSceneMask;
 
 - (void)requestCloudRecord;
 - (void)updateCloudRecord;
+- (void)updateCloudDatabase;
 
 - (void)doRotate:(UIGestureRecognizer *)rec;
 
@@ -217,16 +216,9 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 }
 
 
-- (void)_updateSceneMask
-{
-	_scene->setNeedsUpdateMask(true);
-}
-
-
 - (void)updateSceneMask
 {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updateSceneMask) object:nil];
-	[self performSelector:@selector(_updateSceneMask) withObject:nil afterDelay:0.05];
+	_scene->setNeedsUpdateMask(true);
 }
 
 
@@ -241,8 +233,7 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 			if (strongSelf->_wasMoved == NO) {
 				strongSelf.pyramidRecord = record;
 				
-				NSData *recordMatrix = record[kCloudRecordMatrixKey];
-				[[strongSelf pyramidMatrix] setData:recordMatrix];
+				[[strongSelf pyramidMatrix] setData:record[kCloudRecordMatrixKey]];
 				[strongSelf updateSceneMask];
 			}
 		}
@@ -258,6 +249,13 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	
 	self.pyramidRecord[kCloudRecordMatrixKey] = [[self pyramidMatrix] data];
 	
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateCloudDatabase) object:nil];
+	[self performSelector:@selector(updateCloudDatabase) withObject:nil afterDelay:0.5];
+}
+
+
+- (void)updateCloudDatabase
+{
 	CKDatabase *db = [[CKContainer defaultContainer] privateCloudDatabase];
 	[db saveRecord:self.pyramidRecord completionHandler:nil];
 }
@@ -274,10 +272,11 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	}
 	
 	[self rotateWithPoint:pt];
+	
 	[self.dataSender sendMatrix:[[self pyramidMatrix] data]];
+	[self updateSceneMask];
 	
 	if (rec.state == UIGestureRecognizerStateEnded) {
-		[self updateSceneMask];
 		[self updateCloudRecord];
 	}
 }
@@ -290,6 +289,7 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	
 	[[self pyramidMatrix] setData:data];
 	[self updateSceneMask];
+	
 	[self updateCloudRecord];
 }
 

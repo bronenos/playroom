@@ -49,6 +49,35 @@ void GameScene::light(const glm::vec3 &light)
 }
 
 
+void GameScene::setNeedsUpdateMask(const bool &a) const
+{
+	if (a) {
+		gettimeofday(&_needsUpdateMaskTime, NULL);
+	}
+	else {
+		_needsUpdateMaskTime.tv_sec = 0;
+	}
+}
+
+
+bool GameScene::needsUpdateMask()
+{
+	if (_needsUpdateMaskTime.tv_sec > 0) {
+		timeval currentTime;
+		gettimeofday(&currentTime, NULL);
+		
+		const long sec = currentTime.tv_sec - _needsUpdateMaskTime.tv_sec;
+		const long usec = currentTime.tv_usec - _needsUpdateMaskTime.tv_usec;
+		const long diff = (sec * 1000 + usec / 1000.0) + 0.5;
+		
+		return (diff > 50);
+	}
+	
+	return false;
+}
+
+
+
 glm::vec4 GameScene::generateMaskColor() const
 {
 	const float step = 1.0 / 255.0;
