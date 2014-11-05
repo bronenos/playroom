@@ -58,7 +58,6 @@
 		D4BA50F919F778A6006F9331 /* matrix_transform.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503519F778A6006F9331 /* matrix_transform.inl */; };
 		D4BA50FA19F778A6006F9331 /* noise.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503719F778A6006F9331 /* noise.inl */; };
 		D4BA50FB19F778A6006F9331 /* packing.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503919F778A6006F9331 /* packing.inl */; };
-		D4BA50FC19F778A6006F9331 /* quaternion.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503B19F778A6006F9331 /* quaternion.inl */; };
 		D4BA50FD19F778A6006F9331 /* random.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503D19F778A6006F9331 /* random.inl */; };
 		D4BA50FE19F778A6006F9331 /* reciprocal.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503F19F778A6006F9331 /* reciprocal.inl */; };
 		D4BA50FF19F778A6006F9331 /* type_precision.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504119F778A6006F9331 /* type_precision.inl */; };
@@ -71,7 +70,6 @@
 		D4BA510619F778A6006F9331 /* color_space_YCoCg.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505019F778A6006F9331 /* color_space_YCoCg.inl */; };
 		D4BA510719F778A6006F9331 /* compatibility.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505219F778A6006F9331 /* compatibility.inl */; };
 		D4BA510819F778A6006F9331 /* component_wise.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505419F778A6006F9331 /* component_wise.inl */; };
-		D4BA510919F778A6006F9331 /* dual_quaternion.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505719F778A6006F9331 /* dual_quaternion.inl */; };
 		D4BA510A19F778A6006F9331 /* euler_angles.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505A19F778A6006F9331 /* euler_angles.inl */; };
 		D4BA510B19F778A6006F9331 /* extend.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505C19F778A6006F9331 /* extend.inl */; };
 		D4BA510C19F778A6006F9331 /* extented_min_max.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505E19F778A6006F9331 /* extented_min_max.inl */; };
@@ -103,13 +101,11 @@
 		D4BA512619F778A6006F9331 /* perpendicular.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509319F778A6006F9331 /* perpendicular.inl */; };
 		D4BA512719F778A6006F9331 /* polar_coordinates.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509519F778A6006F9331 /* polar_coordinates.inl */; };
 		D4BA512819F778A6006F9331 /* projection.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509719F778A6006F9331 /* projection.inl */; };
-		D4BA512919F778A6006F9331 /* quaternion.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509919F778A6006F9331 /* quaternion.inl */; };
 		D4BA512A19F778A6006F9331 /* raw_data.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509C19F778A6006F9331 /* raw_data.inl */; };
 		D4BA512B19F778A6006F9331 /* rotate_normalized_axis.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509F19F778A6006F9331 /* rotate_normalized_axis.inl */; };
 		D4BA512C19F778A6006F9331 /* rotate_vector.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A119F778A6006F9331 /* rotate_vector.inl */; };
 		D4BA512D19F778A6006F9331 /* scalar_relational.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A319F778A6006F9331 /* scalar_relational.inl */; };
 		D4BA512E19F778A6006F9331 /* simd_mat4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A519F778A6006F9331 /* simd_mat4.inl */; };
-		D4BA512F19F778A6006F9331 /* simd_quat.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A719F778A6006F9331 /* simd_quat.inl */; };
 		D4BA513019F778A6006F9331 /* simd_vec4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A919F778A6006F9331 /* simd_vec4.inl */; };
 		D4BA513119F778A6006F9331 /* spline.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50AB19F778A6006F9331 /* spline.inl */; };
 		D4BA513219F778A6006F9331 /* std_based_type.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50AD19F778A6006F9331 /* std_based_type.inl */; };
@@ -1194,7 +1190,6 @@
 				D4BA50D519F778A6006F9331 /* func_integer.inl in Resources */,
 				D4BA510E19F778A6006F9331 /* fast_square_root.inl in Resources */,
 				D4BA50FA19F778A6006F9331 /* noise.inl in Resources */,
-				D4BA512F19F778A6006F9331 /* simd_quat.inl in Resources */,
 				D4BA50EC19F778A6006F9331 /* type_mat3x4.inl in Resources */,
 				D4BA50E619F778A6006F9331 /* type_mat.inl in Resources */,
 				D4BA510819F778A6006F9331 /* component_wise.inl in Resources */,
@@ -1216,11 +1211,9 @@
 				D4BA50EA19F778A6006F9331 /* type_mat3x2.inl in Resources */,
 				D4BA513719F778A6006F9331 /* vec1.inl in Resources */,
 				D4BA512319F778A6006F9331 /* number_precision.inl in Resources */,
-				D4BA512919F778A6006F9331 /* quaternion.inl in Resources */,
 				D4BA512819F778A6006F9331 /* projection.inl in Resources */,
 				D4BA510B19F778A6006F9331 /* extend.inl in Resources */,
 				D4BA513119F778A6006F9331 /* spline.inl in Resources */,
-				D4BA510919F778A6006F9331 /* dual_quaternion.inl in Resources */,
 				D4BA50F619F778A6006F9331 /* epsilon.inl in Resources */,
 				D4BA511F19F778A6006F9331 /* multiple.inl in Resources */,
 				D4BA50F319F778A6006F9331 /* type_vec3.inl in Resources */,
@@ -1234,7 +1227,6 @@
 				D4BA513919F778A6006F9331 /* vector_query.inl in Resources */,
 				D4BA50FE19F778A6006F9331 /* reciprocal.inl in Resources */,
 				D4BA510619F778A6006F9331 /* color_space_YCoCg.inl in Resources */,
-				D4BA50FC19F778A6006F9331 /* quaternion.inl in Resources */,
 				D4BA511B19F778A6006F9331 /* matrix_operation.inl in Resources */,
 				D4BA512619F778A6006F9331 /* perpendicular.inl in Resources */,
 				D4D6478719F6BB57002B6BAF /* vertex.glsl in Resources */,

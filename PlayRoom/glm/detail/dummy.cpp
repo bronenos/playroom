@@ -29,8 +29,9 @@
 /// dummy.cpp exist only a wordaround for CMake file.
 ///////////////////////////////////////////////////////////////////////////////////
 
-#define GLM_FORCE_RADIANS
-#define GLM_MESSAGES
+//#define GLM_FORCE_RADIANS
+//#define GLM_MESSAGES
+
 #include "../glm.hpp"
 #include <limits>
 
@@ -104,7 +105,7 @@ void func(GLuint LocationMVP, float Translate, glm::vec2 const & Rotate)
 #include <glm/gtc/type_precision.hpp>// glm::i8vec2, glm::i32vec2
 std::size_t const VertexCount = 4;
 // Float quad geometry
-std::size_t const PositionSizeF32 = VertexCount * sizeof(glm::vec2);
+__unused std::size_t const PositionSizeF32 = VertexCount * sizeof(glm::vec2);
 glm::vec2 const PositionDataF32[VertexCount] =
 {
 	glm::vec2(-1.0f,-1.0f),
@@ -113,7 +114,7 @@ glm::vec2 const PositionDataF32[VertexCount] =
 	glm::vec2(-1.0f, 1.0f)
 	};
 // Half-float quad geometry
-std::size_t const PositionSizeF16 = VertexCount * sizeof(glm::uint);
+__unused std::size_t const PositionSizeF16 = VertexCount * sizeof(glm::uint);
 glm::uint const PositionDataF16[VertexCount] =
 {
 	glm::uint(glm::packUnorm2x16(glm::vec2(-1.0f, -1.0f))),
@@ -122,7 +123,7 @@ glm::uint const PositionDataF16[VertexCount] =
 	glm::uint(glm::packUnorm2x16(glm::vec2(-1.0f, 1.0f)))
 };
 // 8 bits signed integer quad geometry
-std::size_t const PositionSizeI8 = VertexCount * sizeof(glm::i8vec2);
+__unused std::size_t const PositionSizeI8 = VertexCount * sizeof(glm::i8vec2);
 glm::i8vec2 const PositionDataI8[VertexCount] =
 {
 	glm::i8vec2(-1,-1),
@@ -131,7 +132,7 @@ glm::i8vec2 const PositionDataI8[VertexCount] =
 	glm::i8vec2(-1, 1)
 };
 // 32 bits signed integer quad geometry
-std::size_t const PositionSizeI32 = VertexCount * sizeof(glm::i32vec2);
+__unused std::size_t const PositionSizeI32 = VertexCount * sizeof(glm::i32vec2);
 glm::i32vec2 const PositionDataI32[VertexCount] =
 {
 	glm::i32vec2 (-1,-1),
