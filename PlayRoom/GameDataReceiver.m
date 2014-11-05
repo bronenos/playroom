@@ -14,15 +14,21 @@
 
 @interface GameDataReceiver() <CBCentralManagerDelegate, CBPeripheralDelegate>
 @property(nonatomic, strong) CBCentralManager *manager;
+@property(nonatomic, strong) dispatch_queue_t queue;
 @property(nonatomic, strong) CBPeripheral *peripheral;
 @end
 
 
 @implementation GameDataReceiver
+#pragma mark - Memory
 - (instancetype)initWithDelegate:(id<GameDataReceiverDelegate>)delegate
 {
 	if ((self = [super init])) {
-		self.manager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+		self.queue = dispatch_queue_create("GameDataReceiver", 0);
+		
+		NSDictionary *options = @{ CBCentralManagerOptionShowPowerAlertKey : @(0) };
+		self.manager = [[CBCentralManager alloc] initWithDelegate:self queue:self.queue options:options];
+		
 		self.delegate = delegate;
 	}
 	
@@ -30,6 +36,7 @@
 }
 
 
+#pragma mark - Internal
 - (void)startScanning
 {
 	NSArray *services = @[ [CBUUID UUIDWithString:GameDataSenderServiceUUID] ];
@@ -37,6 +44,7 @@
 }
 
 
+#pragma mark - CBCentralManagerDelegate
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
 	if (central.state == CBCentralManagerStatePoweredOn) {
@@ -77,6 +85,7 @@
 }
 
 
+#pragma mark - CBPeripheralDelegate
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
 	for (CBService *service in peripheral.services) {
@@ -96,7 +105,9 @@
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(dataReceiverDidConnect:)]) {
-		[self.delegate dataReceiverDidConnect:self];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self.delegate dataReceiverDidConnect:self];
+		});
 	}
 }
 
@@ -110,7 +121,9 @@
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
 	if ([[characteristic.UUID UUIDString] isEqualToString:GameDataSenderMatrixUUID]) {
-		[self.delegate dataReceiver:self syncMatrix:characteristic.value];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self.delegate dataReceiver:self syncMatrix:characteristic.value];
+		});
 	}
 }
 @end

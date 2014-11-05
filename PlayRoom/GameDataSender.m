@@ -16,21 +16,27 @@ NSString * const GameDataSenderMatrixUUID = @"180F";
 
 @interface GameDataSender() <CBPeripheralManagerDelegate>
 @property(nonatomic, strong) CBPeripheralManager *manager;
+@property(nonatomic, strong) dispatch_queue_t queue;
 @property(nonatomic, strong) CBMutableCharacteristic *matrixItem;
 @end
 
 
 @implementation GameDataSender
+#pragma mark - Memory
 - (instancetype)init
 {
 	if ((self = [super init])) {
-		self.manager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
+		self.queue = dispatch_queue_create("GameDataSender", 0);
+		
+		NSDictionary *options = @{ CBPeripheralManagerOptionShowPowerAlertKey : @(0) };
+		self.manager = [[CBPeripheralManager alloc] initWithDelegate:self queue:self.queue options:options];
 	}
 	
 	return self;
 }
 
 
+#pragma mark - Public
 - (void)sendMatrix:(NSData *)data
 {
 	if (self.matrixItem) {
@@ -41,6 +47,7 @@ NSString * const GameDataSenderMatrixUUID = @"180F";
 }
 
 
+#pragma mark - CBPeripheralManagerDelegate
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
 {
 	if (peripheral.state == CBPeripheralManagerStatePoweredOn) {

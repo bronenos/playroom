@@ -52,8 +52,6 @@ void GameObject::rotate(const glm::vec3 &angles)
 	if (angles.z != 0) {
 		_m = glm::rotate(_m, angles.z, glm::vec3(0, 0, 1));
 	}
-	
-	_scene->setNeedsUpdateMask(true);
 }
 
 
@@ -73,8 +71,6 @@ void GameObject::rotateGlobal(const glm::vec3 &angles)
 		const glm::vec4 axis = glm::inverse(_m) * glm::vec4(0, 0, 1, 0);
 		_m = glm::rotate(_m, angles.z, glm::vec3(axis));
 	}
-	
-	_scene->setNeedsUpdateMask(true);
 }
 
 

@@ -47,6 +47,9 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 
 - (GameObjectData *)pyramidMatrix;
 
+- (void)_updateSceneMask;
+- (void)updateSceneMask;
+
 - (void)requestCloudRecord;
 - (void)updateCloudRecord;
 
@@ -214,6 +217,19 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 }
 
 
+- (void)_updateSceneMask
+{
+	_scene->setNeedsUpdateMask(true);
+}
+
+
+- (void)updateSceneMask
+{
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updateSceneMask) object:nil];
+	[self performSelector:@selector(_updateSceneMask) withObject:nil afterDelay:0.05];
+}
+
+
 - (void)requestCloudRecord
 {
 	__weak typeof(self) weakSelf = self;
@@ -227,6 +243,7 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 				
 				NSData *recordMatrix = record[kCloudRecordMatrixKey];
 				[[strongSelf pyramidMatrix] setData:recordMatrix];
+				[strongSelf updateSceneMask];
 			}
 		}
 	}];
@@ -260,6 +277,7 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	[self.dataSender sendMatrix:[[self pyramidMatrix] data]];
 	
 	if (rec.state == UIGestureRecognizerStateEnded) {
+		[self updateSceneMask];
 		[self updateCloudRecord];
 	}
 }
@@ -271,6 +289,7 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	_wasMoved = YES;
 	
 	[[self pyramidMatrix] setData:data];
+	[self updateSceneMask];
 	[self updateCloudRecord];
 }
 
