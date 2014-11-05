@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D40B945F1A0A2C7400C84EA9 /* GameObjectData.m in Sources */ = {isa = PBXBuildFile; fileRef = D40B945E1A0A2C7400C84EA9 /* GameObjectData.m */; };
 		D4157DBB1A05431100A19D39 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4157DBA1A05431100A19D39 /* CloudKit.framework */; };
 		D4157DBE1A08215D00A19D39 /* GameObjectBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4157DBC1A08215D00A19D39 /* GameObjectBox.cpp */; };
 		D435394919F8316E00A3B33B /* GameScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D435394719F8316E00A3B33B /* GameScene.cpp */; };
@@ -147,6 +148,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D40B945D1A0A2C7400C84EA9 /* GameObjectData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectData.h; sourceTree = "<group>"; };
+		D40B945E1A0A2C7400C84EA9 /* GameObjectData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameObjectData.m; sourceTree = "<group>"; };
 		D4157DB91A0542F400A19D39 /* PlayRoom.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PlayRoom.entitlements; sourceTree = "<group>"; };
 		D4157DBA1A05431100A19D39 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		D4157DBC1A08215D00A19D39 /* GameObjectBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameObjectBox.cpp; sourceTree = "<group>"; };
@@ -1047,6 +1050,8 @@
 				D4DBF9FD19F55085002A5306 /* Images.xcassets */,
 				D4DBF9FF19F55085002A5306 /* LaunchScreen.xib */,
 				D4DBF9F219F55085002A5306 /* Supporting Files */,
+				D40B945D1A0A2C7400C84EA9 /* GameObjectData.h */,
+				D40B945E1A0A2C7400C84EA9 /* GameObjectData.m */,
 				D4D6478219F5A773002B6BAF /* GameView.h */,
 				D4D6478319F5A773002B6BAF /* GameView.m */,
 				D4DBFA1C19F5909F002A5306 /* GameViewController.h */,
@@ -1321,6 +1326,7 @@
 				D4DBFA1E19F5909F002A5306 /* GameViewController.mm in Sources */,
 				D4BA50D119F778A6006F9331 /* dummy.cpp in Sources */,
 				D435394919F8316E00A3B33B /* GameScene.cpp in Sources */,
+				D40B945F1A0A2C7400C84EA9 /* GameObjectData.m in Sources */,
 				D4DBFA1819F58CE8002A5306 /* AppDelegate.m in Sources */,
 				D47C69341A04C454006BA529 /* GameDataSender.m in Sources */,
 				D47C693A1A04F90E006BA529 /* GameViewControllerHelper.mm in Sources */,

@@ -12,6 +12,7 @@
 #import "GameViewController.h"
 #import "GameViewControllerHelper.h"
 #import "GameView.h"
+#import "GameObjectData.h"
 #import "GameDataSender.h"
 #import "GameDataReceiver.h"
 #import "GameController.h"
@@ -44,17 +45,15 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 - (void)render:(CADisplayLink *)link;
 - (void)rotateWithPoint:(CGPoint)pt;
 
-- (NSMutableData *)pyramidMatrix;
+- (GameObjectData *)pyramidMatrix;
 
 - (void)requestCloudRecord;
 - (void)updateCloudRecord;
-- (void)updateCloudDatabase;
 
 - (void)doRotate:(UIGestureRecognizer *)rec;
 
 - (void)onAppWillResignActive;
 - (void)onAppDidBecomeActive;
-- (void)onAppWillTerminate;
 @end
 
 
@@ -104,11 +103,6 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(onAppDidBecomeActive)
 												 name:UIApplicationDidBecomeActiveNotification
-											   object:nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(onAppWillTerminate)
-												 name:UIApplicationWillTerminateNotification
 											   object:nil];
 }
 
@@ -213,10 +207,10 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 }
 
 
-- (NSMutableData *)pyramidMatrix
+- (GameObjectData *)pyramidMatrix
 {
-	float *objm = &_pyramidShape->m()[0][0];
-	return [NSMutableData dataWithBytesNoCopy:objm length:16 * sizeof(float) freeWhenDone:NO];
+	const float *objm = &_pyramidShape->m()[0][0];
+	return [GameObjectData dataWithBytes:objm length:16 * sizeof(float)];
 }
 
 
@@ -230,7 +224,9 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 			__strong typeof(weakSelf) strongSelf = weakSelf;
 			if (strongSelf->_wasMoved == NO) {
 				strongSelf.pyramidRecord = record;
-				[[strongSelf pyramidMatrix] setData:record[kCloudRecordMatrixKey]];;
+				
+				NSData *recordMatrix = record[kCloudRecordMatrixKey];
+				[[strongSelf pyramidMatrix] setData:recordMatrix];
 			}
 		}
 	}];
@@ -243,16 +239,10 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 		self.pyramidRecord = [[CKRecord alloc] initWithRecordType:kCloudRecordType recordID:self.pyramidID];
 	}
 	
-	self.pyramidRecord[kCloudRecordMatrixKey] = [self pyramidMatrix];
-}
-
-
-- (void)updateCloudDatabase
-{
-	if (self.pyramidRecord) {
-		CKDatabase *db = [[CKContainer defaultContainer] privateCloudDatabase];
-		[db saveRecord:self.pyramidRecord completionHandler:nil];
-	}
+	self.pyramidRecord[kCloudRecordMatrixKey] = [[self pyramidMatrix] data];
+	
+	CKDatabase *db = [[CKContainer defaultContainer] privateCloudDatabase];
+	[db saveRecord:self.pyramidRecord completionHandler:nil];
 }
 
 
@@ -267,7 +257,7 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	}
 	
 	[self rotateWithPoint:pt];
-	[self.dataSender sendMatrix:[self pyramidMatrix]];
+	[self.dataSender sendMatrix:[[self pyramidMatrix] data]];
 	
 	if (rec.state == UIGestureRecognizerStateEnded) {
 		[self updateCloudRecord];
@@ -289,18 +279,11 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 - (void)onAppWillResignActive
 {
 	self.displayLink.paused = YES;
-	[self updateCloudDatabase];
 }
 
 
 - (void)onAppDidBecomeActive
 {
 	self.displayLink.paused = NO;
-}
-
-
-- (void)onAppWillTerminate
-{
-	[self updateCloudDatabase];
 }
 @end
