@@ -59,7 +59,7 @@ private:
 	void loadShaders();
 	GLuint loadShaderWithType(GLShader shaderType);
 	
-public:
+private:
 	virtual GLuint uniformLocation(const char *name) const;
 	virtual GLuint attributeLocation(const char *name) const;
 	

@@ -10,7 +10,7 @@
 #include "GameScene.h"
 
 
-GameScene::GameScene(const GameSceneDelegate *delegate)
+GameScene::GameScene(GameSceneDelegate *delegate)
 : GameObject(this)
 , _delegate(delegate)
 {

@@ -26,7 +26,7 @@ public:
 
 class GameScene : public GameObject {
 public:
-	GameScene(const GameSceneDelegate *delegate);
+	GameScene(GameSceneDelegate *delegate);
 	
 	void setRenderSize(const std::pair<GLfloat, GLfloat> renderSize);
 	void look(const glm::vec3 &eye, const glm::vec3 &subject);
@@ -50,7 +50,7 @@ private:
 	void drawPyramid();
 	
 private:
-	const GameSceneDelegate *_delegate = NULL;
+	GameSceneDelegate *_delegate = NULL;
 	mutable bool _needsUpdateMask = false;
 	
 	GLuint _vpSlot;
