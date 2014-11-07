@@ -45,6 +45,7 @@
 - (void)stopScanning
 {
 	[self.manager stopScan];
+	[self.peripherals removeAllObjects];
 }
 
 
@@ -60,6 +61,9 @@
 {
 	if (central.state == CBCentralManagerStatePoweredOn) {
 		[self startScanning];
+	}
+	else if (central.state == CBCentralManagerStatePoweredOff) {
+		[self stopScanning];
 	}
 }
 
