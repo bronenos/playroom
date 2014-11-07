@@ -15,7 +15,10 @@
 @interface GameDataReceiver() <CBCentralManagerDelegate, CBPeripheralDelegate>
 @property(nonatomic, strong) CBCentralManager *manager;
 @property(nonatomic, strong) dispatch_queue_t queue;
-@property(nonatomic, strong) CBPeripheral *peripheral;
+@property(nonatomic, strong) NSMutableSet *peripherals;
+
+- (void)stopScanning;
+- (void)startScanning;
 @end
 
 
@@ -30,6 +33,8 @@
 		self.manager = [[CBCentralManager alloc] initWithDelegate:self queue:self.queue options:options];
 		
 		self.delegate = delegate;
+		
+		self.peripherals = [NSMutableSet new];
 	}
 	
 	return self;
@@ -37,6 +42,12 @@
 
 
 #pragma mark - Internal
+- (void)stopScanning
+{
+	[self.manager stopScan];
+}
+
+
 - (void)startScanning
 {
 	NSArray *services = @[ [CBUUID UUIDWithString:GameDataSenderServiceUUID] ];
@@ -55,9 +66,7 @@
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
-	[central stopScan];
-	
-	self.peripheral = peripheral;
+	[self.peripherals addObject:peripheral];
 	
 	[central cancelPeripheralConnection:peripheral];
 	[central connectPeripheral:peripheral options:nil];
@@ -73,14 +82,19 @@
 
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
-	self.peripheral = nil;
+	[self.peripherals removeObject:peripheral];
+	
+	[self stopScanning];
 	[self startScanning];
 }
 
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
-	self.peripheral = nil;
+	[central cancelPeripheralConnection:peripheral];
+	[self.peripherals removeObject:peripheral];
+	
+	[self stopScanning];
 	[self startScanning];
 }
 
@@ -109,12 +123,6 @@
 			[self.delegate dataReceiverDidConnect:self];
 		});
 	}
-}
-
-
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-{
-	
 }
 
 
