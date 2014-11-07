@@ -20,9 +20,8 @@
 #import "GameObjectPyramid.h"
 
 
-static NSString * const kCloudRecordType		= @"config";
-static NSString * const kCloudRecordName		= @"pyramid";
-static NSString * const kCloudRecordMatrixKey	= @"matrix";
+static NSString * const kCloudRecordType		= @"Config";
+static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 
 @interface GameViewController() <GameDataReceiverDelegate>
@@ -95,7 +94,7 @@ static NSString * const kCloudRecordMatrixKey	= @"matrix";
 	self.dataSender = [[GameDataSender alloc] init];
 	self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
 	
-	self.pyramidID = [[CKRecordID alloc] initWithRecordName:kCloudRecordName];
+	self.pyramidID = [[CKRecordID alloc] initWithRecordName:kCloudRecordType];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(onAppWillResignActive)
