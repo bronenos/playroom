@@ -6,76 +6,43 @@
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
-#ifndef __PlayRoom__GameController__
-#define __PlayRoom__GameController__
-
-#include <iostream>
-#include <OpenGLES/ES2/gl.h>
-#include <glm/glm.hpp>
-#include "GameScene.h"
+#import <Foundation/Foundation.h>
+#import <QuartzCore/QuartzCore.h>
+#import <OpenGLES/ES2/gl.h>
+#import <glm/glm.hpp>
+#import "GameScene.h"
 
 
-enum class GLShader {
-	Vertex, Fragment
-};
+@class GameObject;
 
 
-struct GamePoint {
-	int x, y;
-	
-	GamePoint(double x_, double y_)
-	: x(x_)
-	, y(y_) {
-	}
-};
+@protocol GameControllerAPI
+- (void)initialize;
+- (void)reconfigure;
+- (void)render;
+
+- (void)setEye:(glm::vec3)eye lookAt:(glm::vec3)lookAt;
+- (void)setLight:(glm::vec3)light;
+
+- (void)setModelMatrix:(glm::mat4x4)matrix;
+- (void)setColor:(glm::vec4)color;
+
+- (void)setVertexData:(float *)data size:(size_t)size;
+- (void)setNormal:(glm::vec3)data;
+
+- (void)setMaskMode:(BOOL)maskMode;
+- (void)setMaskColor:(glm::vec4)maskColor;
+
+- (void)drawTriangles:(size_t)number withOffset:(size_t)offset;
+
+- (GameObject *)objectAtPoint:(CGPoint)point;
+@end
 
 
-class GameControllerDelegate {
-public:
-	virtual std::pair<float, float> renderSize() = 0;
-	virtual std::string shaderSource(GLShader shaderType) = 0;
-	virtual void assignBuffer(long bufferID) = 0;
-	virtual void presentBuffer(long bufferID) = 0;
-};
+@interface GameController : NSObject
+@property(nonatomic, weak) CALayer *layer;
+@property(nonatomic, strong) GameScene *scene;
 
-
-class GameController : public GameSceneDelegate {
-public:
-	GameController(GameControllerDelegate *delegate);
-	~GameController();
-	
-	void initialize();
-	void reconfigure();
-	void render();
-	
-	std::shared_ptr<GameScene> scene() {
-		return _scene;
-	}
-	
-	std::shared_ptr<GameObject> objectAtPoint(GamePoint pt);
-	
-private:
-	void setupBuffers();
-	void loadShaders();
-	GLuint loadShaderWithType(GLShader shaderType);
-	
-private:
-	virtual GLuint uniformLocation(const char *name) const;
-	virtual GLuint attributeLocation(const char *name) const;
-	
-private:
-	GameControllerDelegate *_delegate;
-	
-	std::pair<float, float> _renderSize;
-	std::shared_ptr<GameScene> _scene;
-	
-	GLuint _mainFrameBuffer;
-	GLuint _colorRenderBuffer;
-	GLuint _depthRenderBuffer;
-	std::vector<GLubyte> _maskData;
-	
-	GLuint _shaderProgram;
-	GLuint _vertexBuffer;
-};
-
-#endif /* defined(__PlayRoom__GameController__) */
+- (instancetype)initWithLayer:(CALayer *)layer;
++ (GameController<GameControllerAPI> *)sharedInstance;
+@end

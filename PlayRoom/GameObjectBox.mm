@@ -9,7 +9,5 @@
 #include "GameObjectBox.h"
 
 
-void GameObjectBox::render()
-{
-	GameObject::render();
-}
+@implementation GameObjectBox
+@end
