@@ -10,7 +10,6 @@
 #import <CloudKit/CloudKit.h>
 #import <glm/glm.hpp>
 #import "GameViewController.h"
-#import "GameViewControllerHelper.h"
 #import "GameView.h"
 #import "GameObjectData.h"
 #import "GameDataSender.h"
@@ -28,10 +27,10 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 @property(nonatomic, strong) EAGLContext *glContext;
 @property(nonatomic, strong) CADisplayLink *displayLink;
 
-@property(nonatomic, assign) std::shared_ptr<GameController> gameController;
-@property(nonatomic, assign) std::shared_ptr<GameScene> scene;
-@property(nonatomic, assign) std::shared_ptr<GameObjectBox> boxShape;
-@property(nonatomic, assign) std::shared_ptr<GameObjectPyramid> pyramidShape;
+@property(nonatomic, strong) GameController *gameController;
+@property(nonatomic, strong) GameScene *scene;
+@property(nonatomic, strong) GameObjectBox *boxShape;
+@property(nonatomic, strong) GameObjectPyramid *pyramidShape;
 
 @property(nonatomic, strong) CKRecordID *pyramidID;
 @property(nonatomic, strong) CKRecord *pyramidRecord;
@@ -87,10 +86,6 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 - (void)configure
 {
-	_glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-	[EAGLContext setCurrentContext:_glContext];
-	
-	_gameController = std::make_shared<GameController>(new GameViewControllerHelper(self));
 	self.dataSender = [[GameDataSender alloc] init];
 	self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
 	
@@ -115,14 +110,6 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 	self.dataSender = nil;
 	self.dataReceiver.delegate = nil;
 	self.dataReceiver = nil;
-	
-	_scene.reset();
-	_boxShape.reset();
-	_pyramidShape.reset();
-	_gameController.reset();
-	
-	[EAGLContext setCurrentContext:nil];
-	self.glContext = nil;
 }
 
 
@@ -147,7 +134,9 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 {
 	[super viewWillAppear:animated];
 	
-	_gameController->initialize();
+	self.gameController = [[GameController alloc] initWithLayer:self.view.layer];
+	[self.gameController initialize];
+	
 	[self setupScene];
 	[self requestCloudRecord];
 }
@@ -175,24 +164,24 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 #pragma mark - Internal
 - (void)setupScene
 {
-	_scene = _gameController->scene();
-	_scene->look(glm::vec3(0, 25, 100), glm::vec3(0, -10, 0));
-	_scene->light(glm::vec3(85, 50, 0));
+	self.scene = self.gameController.scene;
+	[self.scene setEye:glm::vec3(0, 25, 100) subject:glm::vec3(0, -10, 0)];
+	[self.scene setLight:glm::vec3(85, 50, 0)];
 	
-	_pyramidShape = std::make_shared<GameObjectPyramid>(_scene.get());
-	_pyramidShape->setSize(glm::vec3(40, 55, 40));
-	_pyramidShape->setColor(glm::vec4(0, 0, 0, 0));
+	self.pyramidShape = [GameObjectPyramid new];
+	self.pyramidShape.size = glm::vec3(40, 55, 40);
+	self.pyramidShape.color = glm::vec4(0, 0, 0, 0);
 	
-	_boxShape = std::make_shared<GameObjectBox>(_scene.get());
-	_boxShape->moveBy(glm::vec3(0, 0, 0));
-	_boxShape->addChild(_pyramidShape);
-	_scene->addChild(_boxShape);
+	self.boxShape = [GameObjectBox new];
+	[self.boxShape moveBy:glm::vec3(0, 0, 0)];
+	[self.scene addChild:self.boxShape];
+	[self.boxShape addChild:self.pyramidShape];
 }
 
 
 - (void)render:(CADisplayLink *)link
 {
-	_gameController->render();
+	[self.gameController render];
 }
 
 
@@ -201,7 +190,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 	if (pt.x > 0 && _prevPoint.x > 0) {
 		const float deltaX = 0.02 * (pt.x - _prevPoint.x);
 		const float deltaY = 0.02 * (pt.y - _prevPoint.y);
-		_pyramidShape->rotateGlobal(glm::vec3(deltaY, deltaX, 0));
+		[self.pyramidShape rotateGlobal:glm::vec3(deltaY, deltaX, 0)];
 	}
 	
 	_prevPoint = pt;
@@ -210,14 +199,14 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 - (GameObjectData *)pyramidMatrix
 {
-	const float *objm = &_pyramidShape->m()[0][0];
+	const float *objm = &(*self.pyramidShape.matrix)[0][0];
 	return [GameObjectData dataWithBytes:objm length:16 * sizeof(float)];
 }
 
 
 - (void)updateSceneMask
 {
-	_scene->setNeedsUpdateMask(true);
+	[self.scene setNeedsUpdateMask:YES];
 }
 
 

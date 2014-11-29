@@ -6,10 +6,7 @@
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
-#ifndef __PlayRoom__GameController__
-#define __PlayRoom__GameController__
-
-#include <iostream>
+#import <Foundation/Foundation.h>
 #include <OpenGLES/ES2/gl.h>
 #include <glm/glm.hpp>
 #include "GameScene.h"
@@ -30,52 +27,22 @@ struct GamePoint {
 };
 
 
-class GameControllerDelegate {
-public:
-	virtual std::pair<float, float> renderSize() = 0;
-	virtual std::string shaderSource(GLShader shaderType) = 0;
-	virtual void assignBuffer(long bufferID) = 0;
-	virtual void presentBuffer(long bufferID) = 0;
-};
+@protocol GameControllerDelegate
+- (std::pair<float, float>)renderSize;
+- (std::string)shaderSource:(GLShader)shaderType;
+- (void)assignBuffer:(long)bufferID;
+- (void)presentBuffer:(long)bufferID;
+@end
 
 
-class GameController : public GameSceneDelegate {
-public:
-	GameController(GameControllerDelegate *delegate);
-	~GameController();
-	
-	void initialize();
-	void reconfigure();
-	void render();
-	
-	std::shared_ptr<GameScene> scene() {
-		return _scene;
-	}
-	
-	std::shared_ptr<GameObject> objectAtPoint(GamePoint pt);
-	
-private:
-	void setupBuffers();
-	void loadShaders();
-	GLuint loadShaderWithType(GLShader shaderType);
-	
-private:
-	virtual GLuint uniformLocation(const char *name) const;
-	virtual GLuint attributeLocation(const char *name) const;
-	
-private:
-	GameControllerDelegate *_delegate;
-	
-	std::pair<float, float> _renderSize;
-	std::shared_ptr<GameScene> _scene;
-	
-	GLuint _mainFrameBuffer;
-	GLuint _colorRenderBuffer;
-	GLuint _depthRenderBuffer;
-	std::vector<GLubyte> _maskData;
-	
-	GLuint _shaderProgram;
-	GLuint _vertexBuffer;
-};
+@interface GameController : NSObject <GameSceneDelegate>
+@property(nonatomic, readonly) GameScene *scene;
 
-#endif /* defined(__PlayRoom__GameController__) */
+- (instancetype)initWithLayer:(CALayer *)layer;
+
+- (void)initialize;
+- (void)reconfigure;
+- (void)render;
+
+- (GameObject *)objectAtPoint:(GamePoint)point;
+@end

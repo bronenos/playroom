@@ -6,17 +6,43 @@
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
-#include <assert.h>
-#include "GameController.h"
+#import <QuartzCore/QuartzCore.h>
+#import "GameController.h"
 
 
-GameController::GameController(GameControllerDelegate *delegate)
-: _delegate(delegate)
+@interface GameController()
+@property(nonatomic, weak) CALayer *layer;
+@property(nonatomic, strong) EAGLContext *context;
+@property(nonatomic, readwrite, strong) GameScene *scene;
+@property(nonatomic, assign) CGSize renderSize;
+@property(nonatomic, assign) GLuint mainFrameBuffer;
+@property(nonatomic, assign) GLuint colorRenderBuffer;
+@property(nonatomic, assign) GLuint depthRenderBuffer;
+@property(nonatomic, assign) std::vector<GLubyte> maskData;
+@property(nonatomic, assign) GLuint shaderProgram;
+@property(nonatomic, assign) GLuint vertexBuffer;
+
+- (void)setupBuffers;
+- (void)loadShaders;
+- (GLuint)loadShaderWithType:(GLShader)shaderType;
+@end
+
+
+@implementation GameController
+- (instancetype)initWithLayer:(CALayer *)layer
 {
+	if ((self = [super init])) {
+		self.layer = layer;
+		
+		self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+		[EAGLContext setCurrentContext:self.context];
+	}
+	
+	return self;
 }
 
 
-GameController::~GameController()
+- (void)dealloc
 {
 	if (_mainFrameBuffer) {
 		glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
@@ -46,16 +72,18 @@ GameController::~GameController()
 		glUseProgram(0);
 		glDeleteProgram(_shaderProgram);
 	}
+	
+	[EAGLContext setCurrentContext:nil];
 }
 
 
-void GameController::initialize()
+- (void)initialize
 {
-	this->setupBuffers();
-	this->loadShaders();
-	this->reconfigure();
+	[self setupBuffers];
+	[self loadShaders];
+	[self reconfigure];
 	
-	_scene = std::make_shared<GameScene>(this);
+	self.scene = [[GameScene alloc] initWithDelegate:self];
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_CULL_FACE);
@@ -63,7 +91,7 @@ void GameController::initialize()
 }
 
 
-void GameController::setupBuffers()
+- (void)setupBuffers
 {
 	GLint w = 0, h = 0;
 	
@@ -75,7 +103,7 @@ void GameController::setupBuffers()
 	glGenRenderbuffers(1, &_colorRenderBuffer);
 	if (_colorRenderBuffer) {
 		glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
-		_delegate->assignBuffer(GL_RENDERBUFFER);
+		[self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(id)self.layer];
 		
 		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
 		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &h);
@@ -99,10 +127,10 @@ void GameController::setupBuffers()
 }
 
 
-void GameController::loadShaders()
+- (void)loadShaders
 {
-	GLuint vertexShader = this->loadShaderWithType(GLShader::Vertex);
-	GLuint fragmentShader = this->loadShaderWithType(GLShader::Fragment);
+	GLuint vertexShader = [self loadShaderWithType:GLShader::Vertex];
+	GLuint fragmentShader = [self loadShaderWithType:GLShader::Fragment];
 	
 	_shaderProgram = glCreateProgram();
 	glAttachShader(_shaderProgram, vertexShader);
@@ -115,7 +143,6 @@ void GameController::loadShaders()
 		GLchar log[256];
 		glGetProgramInfoLog(_shaderProgram, sizeof(log), 0, log);
 		
-		std::cout << log;
 		glDeleteProgram(_shaderProgram);
 		
 		return;
@@ -125,12 +152,19 @@ void GameController::loadShaders()
 }
 
 
-GLuint GameController::loadShaderWithType(GLShader shaderType)
+- (GLuint)loadShaderWithType:(GLShader)shaderType
 {
 	std::string shaderSource;
 	GLuint shader;
 	
-	shaderSource = _delegate->shaderSource(shaderType);
+	NSString *fileName = (shaderType == GLShader::Vertex ? @"vertex" : @"fragment");
+	NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"glsl"];
+	
+	NSString *fileContents = [[NSString alloc] initWithContentsOfFile:filePath
+															 encoding:NSUTF8StringEncoding
+																error:nil];
+	shaderSource = [fileContents UTF8String];
+	
 	if (shaderSource.size() > 0) {
 		if (shaderType == GLShader::Vertex) {
 			shader = glCreateShader(GL_VERTEX_SHADER);
@@ -151,7 +185,6 @@ GLuint GameController::loadShaderWithType(GLShader shaderType)
 			GLchar log[256];
 			glGetShaderInfoLog(shader, sizeof(log), 0, log);
 			
-			std::cout << log;
 			glDeleteShader(shader);
 			
 			return 0;
@@ -162,18 +195,18 @@ GLuint GameController::loadShaderWithType(GLShader shaderType)
 }
 
 
-void GameController::reconfigure()
+- (void)reconfigure
 {
-	_renderSize = _delegate->renderSize();
-	glViewport(0, 0, _renderSize.first, _renderSize.second);
+	self.renderSize = self.layer.bounds.size;
+	const int w = self.renderSize.width;
+	const int h = self.renderSize.height;
 	
-	const int w = _renderSize.first;
-	const int h = _renderSize.second;
+	glViewport(0, 0, w, h);
 	_maskData.resize(w * h * 4);
 }
 
 
-void GameController::render()
+- (void)render
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, _mainFrameBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
@@ -182,11 +215,11 @@ void GameController::render()
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	_scene->renderChildren();
-	_delegate->presentBuffer(GL_RENDERBUFFER);
+	[self.scene renderChildren];
+	[self.context presentRenderbuffer:GL_RENDERBUFFER];
 	
-	if (_scene->needsUpdateMask()) {
-		_scene->setNeedsUpdateMask(false);
+	if ([self.scene needsUpdateMask]) {
+		[self.scene setNeedsUpdateMask:NO];
 		
 		glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer);
@@ -194,7 +227,7 @@ void GameController::render()
 		glClearColor(0, 0, 0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		_scene->renderMask();
+		[self.scene renderMask];
 		
 		GLint w, h;
 		glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
@@ -204,13 +237,13 @@ void GameController::render()
 }
 
 
-std::shared_ptr<GameObject> GameController::objectAtPoint(GamePoint pt)
+- (GameObject *)objectAtPoint:(GamePoint)point
 {
 	GLint w, h;
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &h);
 	
-	const GLint offset = (pt.y * w + pt.x) * 4;
+	const GLint offset = (point.y * w + point.x) * 4;
 	GLubyte *touchMask = &_maskData[offset];
 	
 	static GLubyte noneMask[] { 0, 0, 0, 0xFF };
@@ -225,18 +258,19 @@ std::shared_ptr<GameObject> GameController::objectAtPoint(GamePoint pt)
 		mc.g = (float) touchMask[1] / 255.0;
 		mc.b = (float) touchMask[2] / 255.0;
 		
-		return _scene->objectWithMaskColor(mc);
+		return [self.scene objectWithMaskColor:mc];
 	}
 }
 
 
-GLuint GameController::uniformLocation(const char *name) const
+- (GLuint)uniformLocation:(const char *)name
 {
 	return glGetUniformLocation(_shaderProgram, name);
 }
 
 
-GLuint GameController::attributeLocation(const char *name) const
+- (GLuint)attributeLocation:(const char *)name
 {
 	return glGetAttribLocation(_shaderProgram, name);
 }
+@end

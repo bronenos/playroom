@@ -10,13 +10,15 @@
 #include "GameScene.h"
 
 
-void GameObjectPyramid::render()
+@implementation GameObjectPyramid
+- (void)render
 {
-	GameObject::render();
+	[super render];
 	
-	const GLfloat halfX = _size.x * 0.5;
-	const GLfloat halfY = _size.y * 0.5;
-	const GLfloat halfZ = _size.z * 0.5;
+	const glm::vec3 size = self.size;
+	const GLfloat halfX = size.x * 0.5;
+	const GLfloat halfY = size.y * 0.5;
+	const GLfloat halfZ = size.z * 0.5;
 	
 	GLfloat v[] {
 		// top front
@@ -53,22 +55,23 @@ void GameObjectPyramid::render()
 	const size_t v_bottom_count = 2;
 	
 	glBufferData(GL_ARRAY_BUFFER, v_size, v, GL_STATIC_DRAW);
-	glVertexAttribPointer(_scene->vertexSlot(), 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer([self.scene vertexSlot], 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	
 	GLint i = 0;
 	size_t cnt = v_top_count;
 	for (; i<cnt; i++) {
-		const glm::vec3 n = GameObject::calculateNormalVector(v + i * 9);
-		glUniform3fv(_scene->normalSlot(), 1, &n[0]);
+		const glm::vec3 n = [GameObject calculateNormalVector:(v + i * 9)];
+		glUniform3fv([self.scene normalSlot], 1, &n[0]);
 		
 		glDrawArrays(GL_TRIANGLES, i * 3, 3);
 	}
 	
 	cnt += v_bottom_count;
 	for (; i<cnt; i++) {
-		const glm::vec3 n = GameObject::calculateNormalVector(v + i * 9);
-		glUniform3fv(_scene->normalSlot(), 1, &n[0]);
+		const glm::vec3 n = [GameObject calculateNormalVector:(v + i * 9)];
+		glUniform3fv([self.scene normalSlot], 1, &n[0]);
 		
 		glDrawArrays(GL_TRIANGLES, i * 3, 3);
 	}
 }
+@end

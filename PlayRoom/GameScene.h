@@ -6,62 +6,40 @@
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
-#ifndef __PlayRoom__GameScene__
-#define __PlayRoom__GameScene__
-
-#include <OpenGLES/ES2/gl.h>
-#include <glm/glm.hpp>
-#include <string>
-#include <vector>
-#include <utility>
-#include <sys/time.h>
-#include "GameObject.h"
-
-
-class GameSceneDelegate {
-public:
-	virtual GLuint uniformLocation(const char *name) const = 0;
-	virtual GLuint attributeLocation(const char *name) const = 0;
-};
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <OpenGLES/ES2/gl.h>
+#import <glm/glm.hpp>
+#import <string>
+#import <vector>
+#import <utility>
+#import <sys/time.h>
+#import "GameObject.h"
 
 
-class GameScene : public GameObject {
-public:
-	GameScene(GameSceneDelegate *delegate);
-	
-	void setRenderSize(const std::pair<GLfloat, GLfloat> renderSize);
-	void look(const glm::vec3 &eye, const glm::vec3 &subject);
-	void light(const glm::vec3 &light);
-	
-	bool needsUpdateMask();
-	void setNeedsUpdateMask(const bool &a) const;
-	
-	glm::vec4 generateMaskColor() const;
-	void renderMask();
-	
-	GLuint modelSlot() const { return _modelSlot; }
-	GLuint vertexSlot() const { return _vertexSlot; }
-	GLuint normalSlot() const { return _normalSlot; }
-	GLuint colorSlot() const { return _colorSlot; }
-	GLuint lightSlot() const { return _lightSlot; }
-	GLuint maskModeSlot() const { return _maskModeSlot; }
-	GLuint maskColorSlot() const { return _maskColorSlot; }
-	
-private:
-	void drawPyramid();
-	
-private:
-	GameSceneDelegate *_delegate = NULL;
-	mutable timeval _needsUpdateMaskTime { 0, 0 };
-	
-	GLuint _vpSlot;
-	GLuint _modelSlot;
-	GLuint _vertexSlot;
-	GLuint _normalSlot;
-	GLuint _colorSlot;
-	GLuint _lightSlot;
-	GLuint _maskModeSlot;
-	GLuint _maskColorSlot;
-};
+@protocol GameSceneDelegate
+- (GLuint)uniformLocation:(const char *)name;
+- (GLuint)attributeLocation:(const char *)name;
+@end
 
-#endif /* defined(__PlayRoom__GameScene__) */
+
+@interface GameScene : GameObject
+@property(nonatomic, readonly) GLuint modelSlot;
+@property(nonatomic, readonly) GLuint vertexSlot;
+@property(nonatomic, readonly) GLuint normalSlot;
+@property(nonatomic, readonly) GLuint colorSlot;
+@property(nonatomic, readonly) GLuint lightSlot;
+@property(nonatomic, readonly) GLuint maskModeSlot;
+@property(nonatomic, readonly) GLuint maskColorSlot;
+
+- (instancetype)initWithDelegate:(id<GameSceneDelegate>)delegate;
+
+- (void)setEye:(glm::vec3)eye subject:(glm::vec3)subject;
+- (void)setLight:(glm::vec3)light;
+
+- (BOOL)needsUpdateMask;
+- (void)setNeedsUpdateMask:(BOOL)needsUpdateMask;
+
+- (glm::vec4)generateMaskColor;
+- (void)renderMask;
+@end
