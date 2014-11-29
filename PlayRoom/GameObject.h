@@ -30,7 +30,7 @@
 - (void)rotate:(glm::vec3)angles;
 - (void)rotateGlobal:(glm::vec3)angles;
 
-+ (glm::vec3)calculateNormalVector:(const GLfloat *)v;
++ (glm::vec3)calculateNormalVector:(const float *)v;
 
 - (void)render;
 - (void)renderChildren;

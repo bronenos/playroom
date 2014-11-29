@@ -6,8 +6,9 @@
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
-#include "GameObjectPyramid.h"
-#include "GameScene.h"
+#import "GameObjectPyramid.h"
+#import "GameScene.h"
+#import "GameController.h"
 
 
 @implementation GameObjectPyramid
@@ -16,11 +17,11 @@
 	[super render];
 	
 	const glm::vec3 size = self.size;
-	const GLfloat halfX = size.x * 0.5;
-	const GLfloat halfY = size.y * 0.5;
-	const GLfloat halfZ = size.z * 0.5;
+	const float halfX = size.x * 0.5;
+	const float halfY = size.y * 0.5;
+	const float halfZ = size.z * 0.5;
 	
-	GLfloat v[] {
+	float v[] {
 		// top front
 		0,			halfY,		0,
 		-halfX,		-halfY,		halfZ,
@@ -53,25 +54,21 @@
 	const size_t v_size = sizeof(v);
 	const size_t v_top_count = 4;
 	const size_t v_bottom_count = 2;
+	[[GameController sharedInstance] setVertexData:v size:v_size];
 	
-	glBufferData(GL_ARRAY_BUFFER, v_size, v, GL_STATIC_DRAW);
-	glVertexAttribPointer([self.scene vertexSlot], 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	
-	GLint i = 0;
+	size_t i = 0;
 	size_t cnt = v_top_count;
 	for (; i<cnt; i++) {
 		const glm::vec3 n = [GameObject calculateNormalVector:(v + i * 9)];
-		glUniform3fv([self.scene normalSlot], 1, &n[0]);
-		
-		glDrawArrays(GL_TRIANGLES, i * 3, 3);
+		[[GameController sharedInstance] setNormal:n];
+		[[GameController sharedInstance] drawTriangles:3 withOffset:i * 3];
 	}
 	
 	cnt += v_bottom_count;
 	for (; i<cnt; i++) {
 		const glm::vec3 n = [GameObject calculateNormalVector:(v + i * 9)];
-		glUniform3fv([self.scene normalSlot], 1, &n[0]);
-		
-		glDrawArrays(GL_TRIANGLES, i * 3, 3);
+		[[GameController sharedInstance] setNormal:n];
+		[[GameController sharedInstance] drawTriangles:3 withOffset:i * 3];
 	}
 }
 @end

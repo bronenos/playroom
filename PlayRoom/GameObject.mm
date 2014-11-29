@@ -8,6 +8,7 @@
 
 #import "GameObject.h"
 #import "GameScene.h"
+#import "GameController.h"
 
 
 @interface GameObject()
@@ -89,23 +90,23 @@
 }
 
 
-+ (glm::vec3)calculateNormalVector:(const GLfloat *)v
++ (glm::vec3)calculateNormalVector:(const float *)v
 {
 #	define x 0
 #	define y 1
 #	define z 2
 	
-	static GLfloat t1[3];
+	static float t1[3];
 	t1[x] = v[3 + x] - v[0 + x];
 	t1[y] = v[3 + y] - v[0 + y];
 	t1[z] = v[3 + z] - v[0 + z];
 	
-	static GLfloat t2[3];
+	static float t2[3];
 	t2[x] = v[6 + x] - v[0 + x];
 	t2[y] = v[6 + y] - v[0 + y];
 	t2[z] = v[6 + z] - v[0 + z];
 	
-	static GLfloat c[3];
+	static float c[3];
 	c[x] = t1[y] * t2[z] - t1[z] * t2[y];
 	c[y] = t1[z] * t2[x] - t1[x] * t2[z];
 	c[z] = t1[x] * t2[y] - t1[y] * t2[x];
@@ -117,8 +118,8 @@
 - (void)render
 {
 	_rm = _m * _pm;
-	glUniformMatrix4fv([self.scene modelSlot], 1, GL_FALSE, &_rm[0][0]);
-	glUniform4fv([self.scene colorSlot], 1, &_color[0]);
+	[[GameController sharedInstance] setModelMatrix:_rm];
+	[[GameController sharedInstance] setColor:_color];
 }
 
 
@@ -155,8 +156,6 @@
 
 - (void)setMaskMode:(BOOL)maskMode
 {
-	const GLint mode = maskMode ? 1 : 0;
-	
 	if (maskMode) {
 		_maskColor = [self.scene generateMaskColor];
 	}
@@ -164,8 +163,8 @@
 		_maskColor[3] = 0;
 	}
 	
-	glUniform1iv([self.scene maskModeSlot], 1, &mode);
-	glUniform4fv([self.scene maskColorSlot], 1, &_maskColor[0]);
+	[[GameController sharedInstance] setMaskMode:maskMode];
+	[[GameController sharedInstance] setMaskColor:_maskColor];
 }
 
 

@@ -6,67 +6,37 @@
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
-#include <glm/gtc/matrix_transform.hpp>
-#include "GameScene.h"
+#import <glm/gtc/matrix_transform.hpp>
+#import "GameScene.h"
+#import "GameController.h"
 
 
 @interface GameScene()
-@property(nonatomic, weak) id<GameSceneDelegate> delegate;
 @property(nonatomic, assign) timeval needsUpdateMaskTime;
-
-@property(nonatomic, assign) GLuint vpSlot;
-@property(nonatomic, readwrite, assign) GLuint modelSlot;
-@property(nonatomic, readwrite, assign) GLuint vertexSlot;
-@property(nonatomic, readwrite, assign) GLuint normalSlot;
-@property(nonatomic, readwrite, assign) GLuint colorSlot;
-@property(nonatomic, readwrite, assign) GLuint lightSlot;
-@property(nonatomic, readwrite, assign) GLuint maskModeSlot;
-@property(nonatomic, readwrite, assign) GLuint maskColorSlot;
 @end
 
 
 @implementation GameScene
-- (instancetype)initWithDelegate:(id<GameSceneDelegate>)delegate
+- (instancetype)init
 {
 	if ((self = [super init])) {
-		self.delegate = delegate;
 		self.scene = self;
-		
-		self.vpSlot = [self.delegate uniformLocation:"u_vp"];
-		self.modelSlot = [self.delegate uniformLocation:"u_m"];
-		self.vertexSlot = [self.delegate attributeLocation:"a_vertex"];
-		self.normalSlot = [self.delegate uniformLocation:"u_normal"];
-		self.colorSlot = [self.delegate uniformLocation:"u_color"];
-		self.lightSlot = [self.delegate uniformLocation:"u_light"];
-		self.maskModeSlot = [self.delegate uniformLocation:"u_maskMode"];
-		self.maskColorSlot = [self.delegate uniformLocation:"u_maskColor"];
-		
-		glEnableVertexAttribArray(self.vertexSlot);
 	}
 	
 	return self;
 }
 
 
-- (void)setEye:(glm::vec3)eye subject:(glm::vec3)subject
+- (void)setEye:(glm::vec3)eye lookAt:(glm::vec3)lookAt
 {
-	GLint w, h;
-	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
-	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &h);
-	
-	const glm::mat4 pMatrix = glm::perspective<float>(45, (float(w) / float(h)), 0.1, 1000);
-	const glm::mat4 vMatrix = glm::lookAt(eye, subject, glm::vec3(0, 1, 0));
-	
-	const glm::mat4 vpMatrix = pMatrix * vMatrix;
-	glUniformMatrix4fv(_vpSlot, 1, GL_FALSE, &vpMatrix[0][0]);
-	
+	[[GameController sharedInstance] setEye:eye lookAt:lookAt];
 	[self setNeedsUpdateMask:YES];
 }
 
 
 - (void)setLight:(glm::vec3)light
 {
-	glUniform3fv(self.lightSlot, 1, &light[0]);
+	[[GameController sharedInstance] setLight:light];
 }
 
 

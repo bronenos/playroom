@@ -14,7 +14,7 @@
 #import "GameObjectData.h"
 #import "GameDataSender.h"
 #import "GameDataReceiver.h"
-#import "GameController.h"
+#import "GameGLController.h"
 #import "GameObjectBox.h"
 #import "GameObjectPyramid.h"
 
@@ -27,7 +27,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 @property(nonatomic, strong) EAGLContext *glContext;
 @property(nonatomic, strong) CADisplayLink *displayLink;
 
-@property(nonatomic, strong) GameController *gameController;
+@property(nonatomic, strong) GameController<GameControllerAPI> *gameController;
 @property(nonatomic, strong) GameScene *scene;
 @property(nonatomic, strong) GameObjectBox *boxShape;
 @property(nonatomic, strong) GameObjectPyramid *pyramidShape;
@@ -134,7 +134,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 {
 	[super viewWillAppear:animated];
 	
-	self.gameController = [[GameController alloc] initWithLayer:self.view.layer];
+	self.gameController = [[GameGLController alloc] initWithLayer:self.view.layer];
 	[self.gameController initialize];
 	
 	[self setupScene];
@@ -165,7 +165,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 - (void)setupScene
 {
 	self.scene = self.gameController.scene;
-	[self.scene setEye:glm::vec3(0, 25, 100) subject:glm::vec3(0, -10, 0)];
+	[self.scene setEye:glm::vec3(0, 25, 100) lookAt:glm::vec3(0, -10, 0)];
 	[self.scene setLight:glm::vec3(85, 50, 0)];
 	
 	self.pyramidShape = [GameObjectPyramid new];
