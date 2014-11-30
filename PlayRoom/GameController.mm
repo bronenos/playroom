@@ -7,24 +7,35 @@
 //
 
 #import "GameController.h"
+#import "GameGLController.h"
+#import "GameMetalController.h"
 
 
 static id __sharedInstance = nil;
 
 
 @implementation GameController
-- (instancetype)initWithLayer:(CALayer *)layer
+- (instancetype)init
 {
 	if ((self = [super init])) {
-		self.layer = layer;
+		__sharedInstance = self;
 	}
 	
-	__sharedInstance = self;
 	return self;
 }
 
 
-+ (instancetype)sharedInstance
++ (GameController<GameControllerAPI> *)supportedController
+{
+	if ([GameMetalController isSupported]) {
+		return [GameMetalController new];
+	}
+	
+	return [GameGLController new];
+}
+
+
++ (GameController<GameControllerAPI> *)sharedInstance
 {
 	return __sharedInstance;
 }

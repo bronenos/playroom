@@ -1,17 +1,13 @@
 //
-//  GameView.m
+//  GameGLView.h
 //  PlayRoom
 //
 //  Created by Stan Potemkin on 10/21/14.
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
-#import "GameView.h"
+#import <UIKit/UIKit.h>
 
 
-@implementation GameView
-+ (Class)layerClass
-{
-	return [CAEAGLLayer class];
-}
+@interface GameGLView : UIView
 @end

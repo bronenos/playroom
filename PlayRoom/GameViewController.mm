@@ -10,11 +10,11 @@
 #import <CloudKit/CloudKit.h>
 #import <glm/glm.hpp>
 #import "GameViewController.h"
-#import "GameView.h"
+#import "GameGLView.h"
 #import "GameObjectData.h"
 #import "GameDataSender.h"
 #import "GameDataReceiver.h"
-#import "GameGLController.h"
+#import "GameController.h"
 #import "GameObjectBox.h"
 #import "GameObjectPyramid.h"
 
@@ -24,13 +24,11 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 
 @interface GameViewController() <GameDataReceiverDelegate>
-@property(nonatomic, strong) EAGLContext *glContext;
-@property(nonatomic, strong) CADisplayLink *displayLink;
-
 @property(nonatomic, strong) GameController<GameControllerAPI> *gameController;
 @property(nonatomic, strong) GameScene *scene;
 @property(nonatomic, strong) GameObjectBox *boxShape;
 @property(nonatomic, strong) GameObjectPyramid *pyramidShape;
+@property(nonatomic, strong) CADisplayLink *displayLink;
 
 @property(nonatomic, strong) CKRecordID *pyramidID;
 @property(nonatomic, strong) CKRecord *pyramidRecord;
@@ -86,6 +84,8 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 - (void)configure
 {
+	self.gameController = [GameController supportedController];
+	
 	self.dataSender = [[GameDataSender alloc] init];
 	self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
 	
@@ -116,7 +116,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 #pragma mark - View
 - (void)loadView
 {
-	self.view = [GameView new];
+	self.view = [[self.gameController viewClass] new];
 }
 
 
@@ -134,7 +134,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 {
 	[super viewWillAppear:animated];
 	
-	self.gameController = [[GameGLController alloc] initWithLayer:self.view.layer];
+	[self.gameController setupWithLayer:self.view.layer];
 	[self.gameController initialize];
 	
 	[self setupScene];
@@ -165,8 +165,9 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 - (void)setupScene
 {
 	self.scene = self.gameController.scene;
+	[self.scene setColor:glm::vec4(0.5, 0.5, 0.5, 1.0)];
 	[self.scene setEye:glm::vec3(0, 25, 100) lookAt:glm::vec3(0, -10, 0)];
-	[self.scene setLight:glm::vec3(85, 50, 0)];
+	[self.scene setLight:glm::vec3(65, 40, 10)];
 	
 	self.pyramidShape = [GameObjectPyramid new];
 	self.pyramidShape.size = glm::vec3(40, 55, 40);
