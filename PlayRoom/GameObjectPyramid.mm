@@ -42,10 +42,12 @@
 		-halfX,		-halfY,		-halfZ,
 		-halfX,		-halfY,		halfZ,
 		
-		// bottom
+		// bottom first half
 		halfX,		-halfY,		halfZ,
 		-halfX,		-halfY,		halfZ,
 		-halfX,		-halfY,		-halfZ,
+		
+		// bottom second half
 		-halfX,		-halfY,		-halfZ,
 		halfX,		-halfY,		-halfZ,
 		halfX,		-halfY,		halfZ,

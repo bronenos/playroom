@@ -17,6 +17,11 @@
 
 
 @protocol GameControllerAPI
++ (BOOL)isSupported;
+
+- (Class)viewClass;
+- (void)setupWithLayer:(CALayer *)layer;
+
 - (void)initialize;
 - (void)reconfigure;
 - (void)render;
@@ -28,7 +33,7 @@
 - (void)setColor:(glm::vec4)color;
 
 - (void)setVertexData:(float *)data size:(size_t)size;
-- (void)setNormal:(glm::vec3)data;
+- (void)setNormal:(glm::vec3)normal;
 
 - (void)setMaskMode:(BOOL)maskMode;
 - (void)setMaskColor:(glm::vec4)maskColor;
@@ -43,6 +48,6 @@
 @property(nonatomic, weak) CALayer *layer;
 @property(nonatomic, strong) GameScene *scene;
 
-- (instancetype)initWithLayer:(CALayer *)layer;
++ (GameController<GameControllerAPI> *)supportedController;
 + (GameController<GameControllerAPI> *)sharedInstance;
 @end

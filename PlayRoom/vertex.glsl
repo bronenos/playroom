@@ -23,9 +23,9 @@ void main()
 		}
 	}
 	
-	mat4 u_mvp = u_vp * u_m;
-	gl_Position = u_mvp * a_vertex;
+	mat4 mvp = u_vp * u_m;
+	gl_Position = mvp * a_vertex;
 	
 	v_vertex = vec3(gl_Position);
-	v_normal = vec3(u_mvp * vec4(u_normal, 0.0));
+	v_normal = vec3(mvp * vec4(u_normal, 0.0));
 }

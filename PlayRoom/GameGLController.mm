@@ -7,6 +7,7 @@
 //
 
 #import "GameGLController.h"
+#import "GameGLView.h"
 
 
 enum class GLShader {
@@ -40,9 +41,15 @@ enum class GLShader {
 
 
 @implementation GameGLController
-- (instancetype)initWithLayer:(CALayer *)layer
++ (BOOL)isSupported
 {
-	if ((self = [super initWithLayer:layer])) {
+	return YES;
+}
+
+
+- (instancetype)init
+{
+	if ((self = [super init])) {
 		self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		[EAGLContext setCurrentContext:self.context];
 	}
@@ -83,6 +90,18 @@ enum class GLShader {
 	}
 	
 	[EAGLContext setCurrentContext:nil];
+}
+
+
+- (Class)viewClass
+{
+	return [GameGLView class];
+}
+
+
+- (void)setupWithLayer:(CALayer *)layer
+{
+	self.layer = layer;
 }
 
 
@@ -232,7 +251,8 @@ enum class GLShader {
 	glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer);
 	
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+	const glm::vec4 color = self.scene.color;
+	glClearColor(color.r, color.g, color.b, color.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	[self.scene renderChildren];
@@ -265,9 +285,9 @@ enum class GLShader {
 	
 	const glm::mat4 pMatrix = glm::perspective<float>(45, (float(w) / float(h)), 0.1, 1000);
 	const glm::mat4 vMatrix = glm::lookAt(eye, lookAt, glm::vec3(0, 1, 0));
-	
 	const glm::mat4 vpMatrix = pMatrix * vMatrix;
-	glUniformMatrix4fv(_vpSlot, 1, GL_FALSE, &vpMatrix[0][0]);
+	
+	glUniformMatrix4fv(self.vpSlot, 1, GL_FALSE, &vpMatrix[0][0]);
 }
 
 
@@ -296,9 +316,9 @@ enum class GLShader {
 }
 
 
-- (void)setNormal:(glm::vec3)data
+- (void)setNormal:(glm::vec3)normal
 {
-	glUniform3fv(self.normalSlot, 1, &data[0]);
+	glUniform3fv(self.normalSlot, 1, &normal[0]);
 }
 
 

@@ -1,13 +1,13 @@
 //
-//  GameView.h
+//  GameMetalView.h
 //  PlayRoom
 //
-//  Created by Stan Potemkin on 10/21/14.
+//  Created by Stan Potemkin on 11/30/14.
 //  Copyright (c) 2014 bronenos. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 
-@interface GameView : UIView
+@interface GameMetalView : UIView
 @end
