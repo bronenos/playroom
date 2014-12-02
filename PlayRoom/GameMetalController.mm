@@ -65,10 +65,9 @@
 	pdesc.vertexFunction = vertexFunc;
 	pdesc.fragmentFunction = fragmentFunc;
 	pdesc.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+	pdesc.colorAttachments[0].blendingEnabled = NO;
 	pdesc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
-	
-	NSError *e = nil;
-	self.pipelineState = [self.device newRenderPipelineStateWithDescriptor:pdesc error:&e];
+	self.pipelineState = [self.device newRenderPipelineStateWithDescriptor:pdesc error:nil];
 	
 	MTLDepthStencilDescriptor *ddesc = [MTLDepthStencilDescriptor new];
 	ddesc.depthCompareFunction = MTLCompareFunctionLess;

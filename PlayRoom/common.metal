@@ -12,6 +12,10 @@
 using namespace metal;
 
 
+float4 sub_corner_color(vertex_t pos);
+float4 diffused_color(float4 color, float diffuse);
+
+
 struct ShaderValue {
 	float4 position [[ position ]];
 	float4 color;
@@ -19,7 +23,6 @@ struct ShaderValue {
 };
 
 
-float4 sub_corner_color(vertex_t pos);
 float4 sub_corner_color(vertex_t pos)
 {
 	float4 color;
@@ -28,6 +31,14 @@ float4 sub_corner_color(vertex_t pos)
 	color.b = pos.z > 0 ? 1 : 0;
 	color.a = 1.0;
 	return color;
+}
+
+
+float4 diffused_color(float4 color, float diffuse)
+{
+	float4 ret = color * diffuse;
+	ret.a = color.a;
+	return ret;
 }
 
 
@@ -66,7 +77,7 @@ fragment float4 main_fragment(ShaderValue in [[ stage_in ]],
 	if (uniforms->mask_mode == false) {
 		const float4x4 vp_matrix = uniforms->proj_matrix * uniforms->view_matrix;
 		const float3 in_position = float3(in.position);
-		const float3 light_position = float3(vp_matrix * float4(uniforms->light_position, 0));
+		const float3 light_position = uniforms->light_position; // float3(vp_matrix * float4(uniforms->light_position, 0));
 		
 		const float dist = distance(light_position, in_position);
 		const float3 light_vector = normalize(light_position - in_position);
@@ -74,7 +85,7 @@ fragment float4 main_fragment(ShaderValue in [[ stage_in ]],
 		float diffuse = max(dot(attribs->normal, light_vector), 0.1);
 		diffuse = diffuse * (1.0 / (1.0 + (0.2 * dist * dist))) + 0.2;
 		
-		return in.color * diffuse;
+		return diffused_color(in.color, diffuse);
 	}
 	else {
 		return in.color;

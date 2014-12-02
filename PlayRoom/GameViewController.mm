@@ -174,7 +174,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 	self.pyramidShape.color = glm::vec4(0, 0, 0, 0);
 	
 	self.boxShape = [GameObjectBox new];
-	[self.boxShape moveBy:glm::vec3(0, 0, 0)];
+	[self.boxShape moveBy:glm::vec3(-20, 0, 0)];
 	[self.scene addChild:self.boxShape];
 	[self.boxShape addChild:self.pyramidShape];
 }
@@ -222,7 +222,8 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 			if (strongSelf->_wasMoved == NO) {
 				strongSelf.pyramidRecord = record;
 				
-				[[strongSelf pyramidMatrix] setData:record[kCloudRecordMatrixKey]];
+#				warning "Enable is back"
+//				[[strongSelf pyramidMatrix] setData:record[kCloudRecordMatrixKey]];
 				[strongSelf updateSceneMask];
 			}
 		}

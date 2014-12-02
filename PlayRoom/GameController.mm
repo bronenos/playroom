@@ -27,6 +27,18 @@ static id __sharedInstance = nil;
 
 + (GameController<GameControllerAPI> *)supportedController
 {
+#	ifdef DEBUG
+	const char *gpuEngine = getenv("gpu-engine");
+	if (gpuEngine) {
+		if (strcmp(gpuEngine, "opengl") == 0) {
+			return [GameGLController new];
+		}
+		else if (strcmp(gpuEngine, "metal") == 0) {
+			return [GameMetalController new];
+		}
+	}
+#	endif
+	
 	if ([GameMetalController isSupported]) {
 		return [GameMetalController new];
 	}
