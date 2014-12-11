@@ -7,7 +7,16 @@
 //
 
 #include "GameObjectBox.h"
+#import "GameController.h"
 
 
 @implementation GameObjectBox
+- (void)render
+{
+	[[GameController sharedInstance] beginDrawing];
+	
+	[super render];
+	
+	[[GameController sharedInstance] endDrawing];
+}
 @end

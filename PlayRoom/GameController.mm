@@ -11,6 +11,9 @@
 #import "GameMetalController.h"
 
 
+NSString * const kGameEngineChoice = @"kGameEngineChoice";
+
+
 static id __sharedInstance = nil;
 
 
@@ -25,25 +28,19 @@ static id __sharedInstance = nil;
 }
 
 
-+ (GameController<GameControllerAPI> *)supportedController
++ (Class)controllerClassWithOpenGL
 {
-#	ifdef DEBUG
-	const char *gpuEngine = getenv("gpu-engine");
-	if (gpuEngine) {
-		if (strcmp(gpuEngine, "opengl") == 0) {
-			return [GameGLController new];
-		}
-		else if (strcmp(gpuEngine, "metal") == 0) {
-			return [GameMetalController new];
-		}
-	}
+	return [GameGLController class];
+}
+
+
++ (Class)controllerClassWithMetal
+{
+#	ifndef METAL_DISABLED
+	return [GameMetalController class];
+#	else
+	return nil;
 #	endif
-	
-	if ([GameMetalController isSupported]) {
-		return [GameMetalController new];
-	}
-	
-	return [GameGLController new];
 }
 
 

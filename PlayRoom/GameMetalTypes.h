@@ -18,20 +18,16 @@ typedef struct {
 	simd::float4x4 view_matrix;
 	simd::float3 light_position;
 	bool mask_mode;
-	simd::float4 mask_color;
 } uniforms_t;
 
 
 typedef struct {
-	float x, y, z;
-} vertex_t;
-
-
-typedef struct {
 	simd::float4x4 matrix;
-	vertex_t vertices[0x50];
-	simd::float3 normal;
+	simd::float3x3 normal_matrix;
+	simd::float4 vertices[0x50];
+	simd::float3 normals[0x50];
 	simd::float4 color;
+	simd::float4 mask_color;
 } attributes_t;
 
 #endif

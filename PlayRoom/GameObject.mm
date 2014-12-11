@@ -27,7 +27,6 @@
 		self.m = glm::mat4(1.0);
 		self.pm = self.m;
 		
-		self.position = glm::vec3(0, 0, 0);
 		self.size = glm::vec3(1, 1, 1);
 		self.color = glm::vec4(0, 0, 0, 1.0);
 		self.maskColor = glm::vec4(1.0, 0, 0, 1.0);
@@ -90,36 +89,39 @@
 }
 
 
-+ (glm::vec3)calculateNormalVector:(const float *)v
++ (glm::vec3)calculateNormalVector:(const float *)triangle
 {
-#	define x 0
-#	define y 1
-#	define z 2
+	const int x = 0;
+	const int y = 1;
+	const int z = 2;
 	
-	static float t1[3];
-	t1[x] = v[3 + x] - v[0 + x];
-	t1[y] = v[3 + y] - v[0 + y];
-	t1[z] = v[3 + z] - v[0 + z];
+	static float u[3];
+	u[x] = triangle[3 + x] - triangle[0 + x];
+	u[y] = triangle[3 + y] - triangle[0 + y];
+	u[z] = triangle[3 + z] - triangle[0 + z];
 	
-	static float t2[3];
-	t2[x] = v[6 + x] - v[0 + x];
-	t2[y] = v[6 + y] - v[0 + y];
-	t2[z] = v[6 + z] - v[0 + z];
+	static float v[3];
+	v[x] = triangle[6 + x] - triangle[0 + x];
+	v[y] = triangle[6 + y] - triangle[0 + y];
+	v[z] = triangle[6 + z] - triangle[0 + z];
 	
-	static float c[3];
-	c[x] = t1[y] * t2[z] - t1[z] * t2[y];
-	c[y] = t1[z] * t2[x] - t1[x] * t2[z];
-	c[z] = t1[x] * t2[y] - t1[y] * t2[x];
+	static float n[3];
+	n[x] = u[y] * v[z] - u[z] * v[y];
+	n[y] = u[z] * v[x] - u[x] * v[z];
+	n[z] = u[x] * v[y] - u[y] * v[x];
 	
-	return glm::vec3(c[x], c[y], c[z]);
+	glm::vec3 normal(n[x], n[y], n[z]);
+	glm::vec3 nor = glm::normalize(normal);
+	return nor;
 }
 
 
 - (void)render
 {
-	_rm = _m * _pm;
+	_rm = _pm * _m;
 	[[GameController sharedInstance] setModelMatrix:_rm];
 	[[GameController sharedInstance] setColor:_color];
+	[[GameController sharedInstance] setMaskColor:_maskColor];
 }
 
 
@@ -162,9 +164,6 @@
 	else {
 		_maskColor[3] = 0;
 	}
-	
-	[[GameController sharedInstance] setMaskMode:maskMode];
-	[[GameController sharedInstance] setMaskColor:_maskColor];
 }
 
 

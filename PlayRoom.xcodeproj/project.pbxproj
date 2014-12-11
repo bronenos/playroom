@@ -10,6 +10,129 @@
 		D40B945F1A0A2C7400C84EA9 /* GameObjectData.m in Sources */ = {isa = PBXBuildFile; fileRef = D40B945E1A0A2C7400C84EA9 /* GameObjectData.m */; };
 		D4157DBB1A05431100A19D39 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4157DBA1A05431100A19D39 /* CloudKit.framework */; };
 		D4157DBE1A08215D00A19D39 /* GameObjectBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4157DBC1A08215D00A19D39 /* GameObjectBox.mm */; };
+		D41880E01A35CC0A008E7CF5 /* GameObjectBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4157DBC1A08215D00A19D39 /* GameObjectBox.mm */; };
+		D41880E21A35CC0A008E7CF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DBFA1A19F58DEB002A5306 /* main.m */; };
+		D41880E31A35CC0A008E7CF5 /* GameGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D6478319F5A773002B6BAF /* GameGLView.m */; };
+		D41880E51A35CC0A008E7CF5 /* GameDataReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C69361A04C46A006BA529 /* GameDataReceiver.m */; };
+		D41880E71A35CC0A008E7CF5 /* GameController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4D6477F19F59705002B6BAF /* GameController.mm */; };
+		D41880E81A35CC0A008E7CF5 /* glm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BA4FEE19F778A6006F9331 /* glm.cpp */; };
+		D41880E91A35CC0A008E7CF5 /* GameViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4DBFA1D19F5909F002A5306 /* GameViewController.mm */; };
+		D41880EA1A35CC0A008E7CF5 /* dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4BA4FDB19F778A6006F9331 /* dummy.cpp */; };
+		D41880EB1A35CC0A008E7CF5 /* GameScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = D435394719F8316E00A3B33B /* GameScene.mm */; };
+		D41880EC1A35CC0A008E7CF5 /* GameObjectData.m in Sources */ = {isa = PBXBuildFile; fileRef = D40B945E1A0A2C7400C84EA9 /* GameObjectData.m */; };
+		D41880ED1A35CC0A008E7CF5 /* GameGLController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D48EB08A1A2A727B00908261 /* GameGLController.mm */; };
+		D41880EE1A35CC0A008E7CF5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DBFA1719F58CE8002A5306 /* AppDelegate.m */; };
+		D41880F01A35CC0A008E7CF5 /* GameDataSender.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C69331A04C454006BA529 /* GameDataSender.m */; };
+		D41880F11A35CC0A008E7CF5 /* GameObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4DADF5519F846EF006D6E46 /* GameObject.mm */; };
+		D41880F21A35CC0A008E7CF5 /* GameObjectPyramid.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4DADF5B19F85083006D6E46 /* GameObjectPyramid.mm */; };
+		D41880F41A35CC0A008E7CF5 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4DADF5E19FA5641006D6E46 /* CoreBluetooth.framework */; };
+		D41880F51A35CC0A008E7CF5 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4157DBA1A05431100A19D39 /* CloudKit.framework */; };
+		D41880F71A35CC0A008E7CF5 /* intrinsic_common.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FF119F778A6006F9331 /* intrinsic_common.inl */; };
+		D41880F81A35CC0A008E7CF5 /* func_integer.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FE319F778A6006F9331 /* func_integer.inl */; };
+		D41880F91A35CC0A008E7CF5 /* fast_square_root.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506219F778A6006F9331 /* fast_square_root.inl */; };
+		D41880FA1A35CC0A008E7CF5 /* noise.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503719F778A6006F9331 /* noise.inl */; };
+		D41880FB1A35CC0A008E7CF5 /* type_mat3x4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501419F778A6006F9331 /* type_mat3x4.inl */; };
+		D41880FC1A35CC0A008E7CF5 /* type_mat.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA500819F778A6006F9331 /* type_mat.inl */; };
+		D41880FD1A35CC0A008E7CF5 /* component_wise.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505419F778A6006F9331 /* component_wise.inl */; };
+		D41880FE1A35CC0A008E7CF5 /* orthonormalize.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509119F778A6006F9331 /* orthonormalize.inl */; };
+		D41880FF1A35CC0A008E7CF5 /* mixed_product.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508219F778A6006F9331 /* mixed_product.inl */; };
+		D41881001A35CC0A008E7CF5 /* func_matrix.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FE519F778A6006F9331 /* func_matrix.inl */; };
+		D41881011A35CC0A008E7CF5 /* log_base.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507419F778A6006F9331 /* log_base.inl */; };
+		D41881021A35CC0A008E7CF5 /* func_trigonometric.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FEB19F778A6006F9331 /* func_trigonometric.inl */; };
+		D41881031A35CC0A008E7CF5 /* constants.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA502C19F778A6006F9331 /* constants.inl */; };
+		D41881041A35CC0A008E7CF5 /* matrix_cross_product.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507619F778A6006F9331 /* matrix_cross_product.inl */; };
+		D41881051A35CC0A008E7CF5 /* integer.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506E19F778A6006F9331 /* integer.inl */; };
+		D41881061A35CC0A008E7CF5 /* matrix_access.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503019F778A6006F9331 /* matrix_access.inl */; };
+		D41881071A35CC0A008E7CF5 /* fragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = D4D6478919F6BB6F002B6BAF /* fragment.glsl */; };
+		D41881081A35CC0A008E7CF5 /* io.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507219F778A6006F9331 /* io.inl */; };
+		D41881091A35CC0A008E7CF5 /* matrix_transform.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503519F778A6006F9331 /* matrix_transform.inl */; };
+		D418810A1A35CC0A008E7CF5 /* type_vec2.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA502019F778A6006F9331 /* type_vec2.inl */; };
+		D418810B1A35CC0A008E7CF5 /* func_geometric.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FE119F778A6006F9331 /* func_geometric.inl */; };
+		D418810C1A35CC0A008E7CF5 /* type_gentype.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA500319F778A6006F9331 /* type_gentype.inl */; };
+		D418810D1A35CC0A008E7CF5 /* type_mat3x2.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501019F778A6006F9331 /* type_mat3x2.inl */; };
+		D418810E1A35CC0A008E7CF5 /* vec1.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50B819F778A6006F9331 /* vec1.inl */; };
+		D418810F1A35CC0A008E7CF5 /* number_precision.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508D19F778A6006F9331 /* number_precision.inl */; };
+		D41881101A35CC0A008E7CF5 /* projection.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509719F778A6006F9331 /* projection.inl */; };
+		D41881111A35CC0A008E7CF5 /* extend.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505C19F778A6006F9331 /* extend.inl */; };
+		D41881121A35CC0A008E7CF5 /* spline.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50AB19F778A6006F9331 /* spline.inl */; };
+		D41881131A35CC0A008E7CF5 /* epsilon.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA502E19F778A6006F9331 /* epsilon.inl */; };
+		D41881141A35CC0A008E7CF5 /* multiple.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508419F778A6006F9331 /* multiple.inl */; };
+		D41881151A35CC0A008E7CF5 /* type_vec3.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA502219F778A6006F9331 /* type_vec3.inl */; };
+		D41881161A35CC0A008E7CF5 /* func_noise.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FE719F778A6006F9331 /* func_noise.inl */; };
+		D41881171A35CC0A008E7CF5 /* wrap.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50BE19F778A6006F9331 /* wrap.inl */; };
+		D41881181A35CC0A008E7CF5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4DBF9FA19F55085002A5306 /* Main.storyboard */; };
+		D41881191A35CC0A008E7CF5 /* euler_angles.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505A19F778A6006F9331 /* euler_angles.inl */; };
+		D418811A1A35CC0A008E7CF5 /* intrinsic_matrix.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FF919F778A6006F9331 /* intrinsic_matrix.inl */; };
+		D418811B1A35CC0A008E7CF5 /* rotate_vector.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A119F778A6006F9331 /* rotate_vector.inl */; };
+		D418811C1A35CC0A008E7CF5 /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FD119F778A6006F9331 /* CMakeLists.txt */; };
+		D418811D1A35CC0A008E7CF5 /* vector_query.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50BC19F778A6006F9331 /* vector_query.inl */; };
+		D418811E1A35CC0A008E7CF5 /* reciprocal.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503F19F778A6006F9331 /* reciprocal.inl */; };
+		D418811F1A35CC0A008E7CF5 /* color_space_YCoCg.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505019F778A6006F9331 /* color_space_YCoCg.inl */; };
+		D41881201A35CC0A008E7CF5 /* matrix_operation.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507C19F778A6006F9331 /* matrix_operation.inl */; };
+		D41881211A35CC0A008E7CF5 /* perpendicular.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509319F778A6006F9331 /* perpendicular.inl */; };
+		D41881221A35CC0A008E7CF5 /* vertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = D4D6478519F6BB57002B6BAF /* vertex.glsl */; };
+		D41881231A35CC0A008E7CF5 /* norm.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508719F778A6006F9331 /* norm.inl */; };
+		D41881241A35CC0A008E7CF5 /* type_half.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA500519F778A6006F9331 /* type_half.inl */; };
+		D41881251A35CC0A008E7CF5 /* intrinsic_integer.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FF719F778A6006F9331 /* intrinsic_integer.inl */; };
+		D41881261A35CC0A008E7CF5 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4DBF9FF19F55085002A5306 /* LaunchScreen.xib */; };
+		D41881271A35CC0A008E7CF5 /* simd_vec4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A919F778A6006F9331 /* simd_vec4.inl */; };
+		D41881281A35CC0A008E7CF5 /* transform.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50B119F778A6006F9331 /* transform.inl */; };
+		D41881291A35CC0A008E7CF5 /* rotate_normalized_axis.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509F19F778A6006F9331 /* rotate_normalized_axis.inl */; };
+		D418812A1A35CC0A008E7CF5 /* func_common.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FDD19F778A6006F9331 /* func_common.inl */; };
+		D418812B1A35CC0A008E7CF5 /* type_mat2x4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA500E19F778A6006F9331 /* type_mat2x4.inl */; };
+		D418812C1A35CC0A008E7CF5 /* simd_mat4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A519F778A6006F9331 /* simd_mat4.inl */; };
+		D418812D1A35CC0A008E7CF5 /* raw_data.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509C19F778A6006F9331 /* raw_data.inl */; };
+		D418812E1A35CC0A008E7CF5 /* type_vec.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501C19F778A6006F9331 /* type_vec.inl */; };
+		D418812F1A35CC0A008E7CF5 /* gradient_paint.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506619F778A6006F9331 /* gradient_paint.inl */; };
+		D41881301A35CC0A008E7CF5 /* type_mat2x2.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA500A19F778A6006F9331 /* type_mat2x2.inl */; };
+		D41881311A35CC0A008E7CF5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4DBF9FD19F55085002A5306 /* Images.xcassets */; };
+		D41881321A35CC0A008E7CF5 /* optimum_pow.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508F19F778A6006F9331 /* optimum_pow.inl */; };
+		D41881331A35CC0A008E7CF5 /* compatibility.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505219F778A6006F9331 /* compatibility.inl */; };
+		D41881351A35CC0A008E7CF5 /* color_space.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504E19F778A6006F9331 /* color_space.inl */; };
+		D41881361A35CC0A008E7CF5 /* polar_coordinates.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA509519F778A6006F9331 /* polar_coordinates.inl */; };
+		D41881371A35CC0A008E7CF5 /* matrix_transform_2d.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508019F778A6006F9331 /* matrix_transform_2d.inl */; };
+		D41881381A35CC0A008E7CF5 /* type_vec4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA502419F778A6006F9331 /* type_vec4.inl */; };
+		D41881391A35CC0A008E7CF5 /* random.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503D19F778A6006F9331 /* random.inl */; };
+		D418813A1A35CC0A008E7CF5 /* packing.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503919F778A6006F9331 /* packing.inl */; };
+		D418813B1A35CC0A008E7CF5 /* type_mat4x3.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501819F778A6006F9331 /* type_mat4x3.inl */; };
+		D418813C1A35CC0A008E7CF5 /* intrinsic_geometric.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FF519F778A6006F9331 /* intrinsic_geometric.inl */; };
+		D418813D1A35CC0A008E7CF5 /* handed_coordinate_space.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506819F778A6006F9331 /* handed_coordinate_space.inl */; };
+		D418813E1A35CC0A008E7CF5 /* scalar_relational.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50A319F778A6006F9331 /* scalar_relational.inl */; };
+		D418813F1A35CC0A008E7CF5 /* normal.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508919F778A6006F9331 /* normal.inl */; };
+		D41881401A35CC0A008E7CF5 /* string_cast.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50AF19F778A6006F9331 /* string_cast.inl */; };
+		D41881411A35CC0A008E7CF5 /* fast_exponential.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506019F778A6006F9331 /* fast_exponential.inl */; };
+		D41881421A35CC0A008E7CF5 /* type_mat2x3.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA500C19F778A6006F9331 /* type_mat2x3.inl */; };
+		D41881431A35CC0A008E7CF5 /* transform2.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50B319F778A6006F9331 /* transform2.inl */; };
+		D41881441A35CC0A008E7CF5 /* intrinsic_exponential.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FF319F778A6006F9331 /* intrinsic_exponential.inl */; };
+		D41881451A35CC0A008E7CF5 /* extented_min_max.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA505E19F778A6006F9331 /* extented_min_max.inl */; };
+		D41881461A35CC0A008E7CF5 /* ulp.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504519F778A6006F9331 /* ulp.inl */; };
+		D41881471A35CC0A008E7CF5 /* unsigned_int.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50B619F778A6006F9331 /* unsigned_int.inl */; };
+		D41881481A35CC0A008E7CF5 /* type_precision.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504119F778A6006F9331 /* type_precision.inl */; };
+		D41881491A35CC0A008E7CF5 /* type_mat4x4.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501A19F778A6006F9331 /* type_mat4x4.inl */; };
+		D418814A1A35CC0A008E7CF5 /* matrix_query.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507E19F778A6006F9331 /* matrix_query.inl */; };
+		D418814B1A35CC0A008E7CF5 /* intersect.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507019F778A6006F9331 /* intersect.inl */; };
+		D418814C1A35CC0A008E7CF5 /* func_exponential.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FDF19F778A6006F9331 /* func_exponential.inl */; };
+		D418814D1A35CC0A008E7CF5 /* matrix_interpolation.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507819F778A6006F9331 /* matrix_interpolation.inl */; };
+		D418814E1A35CC0A008E7CF5 /* matrix_inverse.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA503319F778A6006F9331 /* matrix_inverse.inl */; };
+		D418814F1A35CC0A008E7CF5 /* intrinsic_trigonometric.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FFB19F778A6006F9331 /* intrinsic_trigonometric.inl */; };
+		D41881501A35CC0A008E7CF5 /* type_mat3x3.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501219F778A6006F9331 /* type_mat3x3.inl */; };
+		D41881511A35CC0A008E7CF5 /* bit.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504A19F778A6006F9331 /* bit.inl */; };
+		D41881521A35CC0A008E7CF5 /* intrinsic_vector_relational.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FFD19F778A6006F9331 /* intrinsic_vector_relational.inl */; };
+		D41881531A35CC0A008E7CF5 /* closest_point.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504C19F778A6006F9331 /* closest_point.inl */; };
+		D41881541A35CC0A008E7CF5 /* func_packing.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FE919F778A6006F9331 /* func_packing.inl */; };
+		D41881551A35CC0A008E7CF5 /* normalize_dot.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA508B19F778A6006F9331 /* normalize_dot.inl */; };
+		D41881561A35CC0A008E7CF5 /* type_vec1.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501E19F778A6006F9331 /* type_vec1.inl */; };
+		D41881571A35CC0A008E7CF5 /* type_ptr.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504319F778A6006F9331 /* type_ptr.inl */; };
+		D41881581A35CC0A008E7CF5 /* matrix_major_storage.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA507A19F778A6006F9331 /* matrix_major_storage.inl */; };
+		D41881591A35CC0A008E7CF5 /* func_vector_relational.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FED19F778A6006F9331 /* func_vector_relational.inl */; };
+		D418815A1A35CC0A008E7CF5 /* std_based_type.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50AD19F778A6006F9331 /* std_based_type.inl */; };
+		D418815B1A35CC0A008E7CF5 /* type_mat4x2.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA501619F778A6006F9331 /* type_mat4x2.inl */; };
+		D418815C1A35CC0A008E7CF5 /* vector_angle.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA50BA19F778A6006F9331 /* vector_angle.inl */; };
+		D418815D1A35CC0A008E7CF5 /* inertia.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506A19F778A6006F9331 /* inertia.inl */; };
+		D418815E1A35CC0A008E7CF5 /* precision.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA4FFF19F778A6006F9331 /* precision.inl */; };
+		D418815F1A35CC0A008E7CF5 /* fast_trigonometry.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506419F778A6006F9331 /* fast_trigonometry.inl */; };
+		D41881601A35CC0A008E7CF5 /* int_10_10_10_2.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA506C19F778A6006F9331 /* int_10_10_10_2.inl */; };
+		D41881611A35CC0A008E7CF5 /* associated_min_max.inl in Resources */ = {isa = PBXBuildFile; fileRef = D4BA504819F778A6006F9331 /* associated_min_max.inl */; };
 		D435394919F8316E00A3B33B /* GameScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = D435394719F8316E00A3B33B /* GameScene.mm */; };
 		D47C69341A04C454006BA529 /* GameDataSender.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C69331A04C454006BA529 /* GameDataSender.m */; };
 		D47C69371A04C46A006BA529 /* GameDataReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = D47C69361A04C46A006BA529 /* GameDataReceiver.m */; };
@@ -130,21 +253,10 @@
 		D4DBF9FC19F55085002A5306 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4DBF9FA19F55085002A5306 /* Main.storyboard */; };
 		D4DBF9FE19F55085002A5306 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4DBF9FD19F55085002A5306 /* Images.xcassets */; };
 		D4DBFA0119F55085002A5306 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4DBF9FF19F55085002A5306 /* LaunchScreen.xib */; };
-		D4DBFA0D19F55086002A5306 /* PlayRoomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DBFA0C19F55086002A5306 /* PlayRoomTests.swift */; };
 		D4DBFA1819F58CE8002A5306 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DBFA1719F58CE8002A5306 /* AppDelegate.m */; };
 		D4DBFA1B19F58DEB002A5306 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DBFA1A19F58DEB002A5306 /* main.m */; };
 		D4DBFA1E19F5909F002A5306 /* GameViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D4DBFA1D19F5909F002A5306 /* GameViewController.mm */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		D4DBFA0719F55086002A5306 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D4DBF9E719F55085002A5306 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D4DBF9EE19F55085002A5306;
-			remoteInfo = PlayRoom;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		D40B945D1A0A2C7400C84EA9 /* GameObjectData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectData.h; sourceTree = "<group>"; };
@@ -153,6 +265,8 @@
 		D4157DBA1A05431100A19D39 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		D4157DBC1A08215D00A19D39 /* GameObjectBox.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameObjectBox.mm; sourceTree = "<group>"; };
 		D4157DBD1A08215D00A19D39 /* GameObjectBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectBox.h; sourceTree = "<group>"; };
+		D41881651A35CC0A008E7CF5 /* PlayRoomSim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlayRoomSim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D41881661A35CC0A008E7CF5 /* PlayRoomSim-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PlayRoomSim-Info.plist"; path = "/Users/bronenos/Documents/Development/PlayRoom/PlayRoomSim-Info.plist"; sourceTree = "<absolute>"; };
 		D435394719F8316E00A3B33B /* GameScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameScene.mm; sourceTree = "<group>"; };
 		D435394819F8316E00A3B33B /* GameScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		D47C69321A04C454006BA529 /* GameDataSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameDataSender.h; sourceTree = "<group>"; };
@@ -537,9 +651,6 @@
 		D4DBF9FB19F55085002A5306 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D4DBF9FD19F55085002A5306 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D4DBFA0019F55085002A5306 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D4DBFA0619F55086002A5306 /* PlayRoomTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlayRoomTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D4DBFA0B19F55086002A5306 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D4DBFA0C19F55086002A5306 /* PlayRoomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayRoomTests.swift; sourceTree = "<group>"; };
 		D4DBFA1619F58CE8002A5306 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D4DBFA1719F58CE8002A5306 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		D4DBFA1A19F58DEB002A5306 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -548,19 +659,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D41880F31A35CC0A008E7CF5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D41880F41A35CC0A008E7CF5 /* CoreBluetooth.framework in Frameworks */,
+				D41880F51A35CC0A008E7CF5 /* CloudKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4DBF9EC19F55085002A5306 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				D4DADF5F19FA5641006D6E46 /* CoreBluetooth.framework in Frameworks */,
 				D4157DBB1A05431100A19D39 /* CloudKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D4DBFA0319F55086002A5306 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1029,7 +1142,6 @@
 				D4157DBA1A05431100A19D39 /* CloudKit.framework */,
 				D4DADF5E19FA5641006D6E46 /* CoreBluetooth.framework */,
 				D4DBF9F119F55085002A5306 /* PlayRoom */,
-				D4DBFA0919F55086002A5306 /* PlayRoomTests */,
 				D4DBF9F019F55085002A5306 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -1038,7 +1150,7 @@
 			isa = PBXGroup;
 			children = (
 				D4DBF9EF19F55085002A5306 /* PlayRoom.app */,
-				D4DBFA0619F55086002A5306 /* PlayRoomTests.xctest */,
+				D41881651A35CC0A008E7CF5 /* PlayRoomSim.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1093,24 +1205,8 @@
 			isa = PBXGroup;
 			children = (
 				D4DBF9F319F55085002A5306 /* Info.plist */,
+				D41881661A35CC0A008E7CF5 /* PlayRoomSim-Info.plist */,
 				D4DBFA1A19F58DEB002A5306 /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		D4DBFA0919F55086002A5306 /* PlayRoomTests */ = {
-			isa = PBXGroup;
-			children = (
-				D4DBFA0C19F55086002A5306 /* PlayRoomTests.swift */,
-				D4DBFA0A19F55086002A5306 /* Supporting Files */,
-			);
-			path = PlayRoomTests;
-			sourceTree = "<group>";
-		};
-		D4DBFA0A19F55086002A5306 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				D4DBFA0B19F55086002A5306 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1118,6 +1214,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D41880DE1A35CC0A008E7CF5 /* PlayRoom Sim */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D41881621A35CC0A008E7CF5 /* Build configuration list for PBXNativeTarget "PlayRoom Sim" */;
+			buildPhases = (
+				D41880DF1A35CC0A008E7CF5 /* Sources */,
+				D41880F31A35CC0A008E7CF5 /* Frameworks */,
+				D41880F61A35CC0A008E7CF5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PlayRoom Sim";
+			productName = PlayRoom;
+			productReference = D41881651A35CC0A008E7CF5 /* PlayRoomSim.app */;
+			productType = "com.apple.product-type.application";
+		};
 		D4DBF9EE19F55085002A5306 /* PlayRoom */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D4DBFA1019F55086002A5306 /* Build configuration list for PBXNativeTarget "PlayRoom" */;
@@ -1134,24 +1247,6 @@
 			productName = PlayRoom;
 			productReference = D4DBF9EF19F55085002A5306 /* PlayRoom.app */;
 			productType = "com.apple.product-type.application";
-		};
-		D4DBFA0519F55086002A5306 /* PlayRoomTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D4DBFA1319F55086002A5306 /* Build configuration list for PBXNativeTarget "PlayRoomTests" */;
-			buildPhases = (
-				D4DBFA0219F55086002A5306 /* Sources */,
-				D4DBFA0319F55086002A5306 /* Frameworks */,
-				D4DBFA0419F55086002A5306 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D4DBFA0819F55086002A5306 /* PBXTargetDependency */,
-			);
-			name = PlayRoomTests;
-			productName = PlayRoomTests;
-			productReference = D4DBFA0619F55086002A5306 /* PlayRoomTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -1171,10 +1266,6 @@
 							};
 						};
 					};
-					D4DBFA0519F55086002A5306 = {
-						CreatedOnToolsVersion = 6.0.1;
-						TestTargetID = D4DBF9EE19F55085002A5306;
-					};
 				};
 			};
 			buildConfigurationList = D4DBF9EA19F55085002A5306 /* Build configuration list for PBXProject "PlayRoom" */;
@@ -1191,12 +1282,125 @@
 			projectRoot = "";
 			targets = (
 				D4DBF9EE19F55085002A5306 /* PlayRoom */,
-				D4DBFA0519F55086002A5306 /* PlayRoomTests */,
+				D41880DE1A35CC0A008E7CF5 /* PlayRoom Sim */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D41880F61A35CC0A008E7CF5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D41880F71A35CC0A008E7CF5 /* intrinsic_common.inl in Resources */,
+				D41880F81A35CC0A008E7CF5 /* func_integer.inl in Resources */,
+				D41880F91A35CC0A008E7CF5 /* fast_square_root.inl in Resources */,
+				D41880FA1A35CC0A008E7CF5 /* noise.inl in Resources */,
+				D41880FB1A35CC0A008E7CF5 /* type_mat3x4.inl in Resources */,
+				D41880FC1A35CC0A008E7CF5 /* type_mat.inl in Resources */,
+				D41880FD1A35CC0A008E7CF5 /* component_wise.inl in Resources */,
+				D41880FE1A35CC0A008E7CF5 /* orthonormalize.inl in Resources */,
+				D41880FF1A35CC0A008E7CF5 /* mixed_product.inl in Resources */,
+				D41881001A35CC0A008E7CF5 /* func_matrix.inl in Resources */,
+				D41881011A35CC0A008E7CF5 /* log_base.inl in Resources */,
+				D41881021A35CC0A008E7CF5 /* func_trigonometric.inl in Resources */,
+				D41881031A35CC0A008E7CF5 /* constants.inl in Resources */,
+				D41881041A35CC0A008E7CF5 /* matrix_cross_product.inl in Resources */,
+				D41881051A35CC0A008E7CF5 /* integer.inl in Resources */,
+				D41881061A35CC0A008E7CF5 /* matrix_access.inl in Resources */,
+				D41881071A35CC0A008E7CF5 /* fragment.glsl in Resources */,
+				D41881081A35CC0A008E7CF5 /* io.inl in Resources */,
+				D41881091A35CC0A008E7CF5 /* matrix_transform.inl in Resources */,
+				D418810A1A35CC0A008E7CF5 /* type_vec2.inl in Resources */,
+				D418810B1A35CC0A008E7CF5 /* func_geometric.inl in Resources */,
+				D418810C1A35CC0A008E7CF5 /* type_gentype.inl in Resources */,
+				D418810D1A35CC0A008E7CF5 /* type_mat3x2.inl in Resources */,
+				D418810E1A35CC0A008E7CF5 /* vec1.inl in Resources */,
+				D418810F1A35CC0A008E7CF5 /* number_precision.inl in Resources */,
+				D41881101A35CC0A008E7CF5 /* projection.inl in Resources */,
+				D41881111A35CC0A008E7CF5 /* extend.inl in Resources */,
+				D41881121A35CC0A008E7CF5 /* spline.inl in Resources */,
+				D41881131A35CC0A008E7CF5 /* epsilon.inl in Resources */,
+				D41881141A35CC0A008E7CF5 /* multiple.inl in Resources */,
+				D41881151A35CC0A008E7CF5 /* type_vec3.inl in Resources */,
+				D41881161A35CC0A008E7CF5 /* func_noise.inl in Resources */,
+				D41881171A35CC0A008E7CF5 /* wrap.inl in Resources */,
+				D41881181A35CC0A008E7CF5 /* Main.storyboard in Resources */,
+				D41881191A35CC0A008E7CF5 /* euler_angles.inl in Resources */,
+				D418811A1A35CC0A008E7CF5 /* intrinsic_matrix.inl in Resources */,
+				D418811B1A35CC0A008E7CF5 /* rotate_vector.inl in Resources */,
+				D418811C1A35CC0A008E7CF5 /* CMakeLists.txt in Resources */,
+				D418811D1A35CC0A008E7CF5 /* vector_query.inl in Resources */,
+				D418811E1A35CC0A008E7CF5 /* reciprocal.inl in Resources */,
+				D418811F1A35CC0A008E7CF5 /* color_space_YCoCg.inl in Resources */,
+				D41881201A35CC0A008E7CF5 /* matrix_operation.inl in Resources */,
+				D41881211A35CC0A008E7CF5 /* perpendicular.inl in Resources */,
+				D41881221A35CC0A008E7CF5 /* vertex.glsl in Resources */,
+				D41881231A35CC0A008E7CF5 /* norm.inl in Resources */,
+				D41881241A35CC0A008E7CF5 /* type_half.inl in Resources */,
+				D41881251A35CC0A008E7CF5 /* intrinsic_integer.inl in Resources */,
+				D41881261A35CC0A008E7CF5 /* LaunchScreen.xib in Resources */,
+				D41881271A35CC0A008E7CF5 /* simd_vec4.inl in Resources */,
+				D41881281A35CC0A008E7CF5 /* transform.inl in Resources */,
+				D41881291A35CC0A008E7CF5 /* rotate_normalized_axis.inl in Resources */,
+				D418812A1A35CC0A008E7CF5 /* func_common.inl in Resources */,
+				D418812B1A35CC0A008E7CF5 /* type_mat2x4.inl in Resources */,
+				D418812C1A35CC0A008E7CF5 /* simd_mat4.inl in Resources */,
+				D418812D1A35CC0A008E7CF5 /* raw_data.inl in Resources */,
+				D418812E1A35CC0A008E7CF5 /* type_vec.inl in Resources */,
+				D418812F1A35CC0A008E7CF5 /* gradient_paint.inl in Resources */,
+				D41881301A35CC0A008E7CF5 /* type_mat2x2.inl in Resources */,
+				D41881311A35CC0A008E7CF5 /* Images.xcassets in Resources */,
+				D41881321A35CC0A008E7CF5 /* optimum_pow.inl in Resources */,
+				D41881331A35CC0A008E7CF5 /* compatibility.inl in Resources */,
+				D41881351A35CC0A008E7CF5 /* color_space.inl in Resources */,
+				D41881361A35CC0A008E7CF5 /* polar_coordinates.inl in Resources */,
+				D41881371A35CC0A008E7CF5 /* matrix_transform_2d.inl in Resources */,
+				D41881381A35CC0A008E7CF5 /* type_vec4.inl in Resources */,
+				D41881391A35CC0A008E7CF5 /* random.inl in Resources */,
+				D418813A1A35CC0A008E7CF5 /* packing.inl in Resources */,
+				D418813B1A35CC0A008E7CF5 /* type_mat4x3.inl in Resources */,
+				D418813C1A35CC0A008E7CF5 /* intrinsic_geometric.inl in Resources */,
+				D418813D1A35CC0A008E7CF5 /* handed_coordinate_space.inl in Resources */,
+				D418813E1A35CC0A008E7CF5 /* scalar_relational.inl in Resources */,
+				D418813F1A35CC0A008E7CF5 /* normal.inl in Resources */,
+				D41881401A35CC0A008E7CF5 /* string_cast.inl in Resources */,
+				D41881411A35CC0A008E7CF5 /* fast_exponential.inl in Resources */,
+				D41881421A35CC0A008E7CF5 /* type_mat2x3.inl in Resources */,
+				D41881431A35CC0A008E7CF5 /* transform2.inl in Resources */,
+				D41881441A35CC0A008E7CF5 /* intrinsic_exponential.inl in Resources */,
+				D41881451A35CC0A008E7CF5 /* extented_min_max.inl in Resources */,
+				D41881461A35CC0A008E7CF5 /* ulp.inl in Resources */,
+				D41881471A35CC0A008E7CF5 /* unsigned_int.inl in Resources */,
+				D41881481A35CC0A008E7CF5 /* type_precision.inl in Resources */,
+				D41881491A35CC0A008E7CF5 /* type_mat4x4.inl in Resources */,
+				D418814A1A35CC0A008E7CF5 /* matrix_query.inl in Resources */,
+				D418814B1A35CC0A008E7CF5 /* intersect.inl in Resources */,
+				D418814C1A35CC0A008E7CF5 /* func_exponential.inl in Resources */,
+				D418814D1A35CC0A008E7CF5 /* matrix_interpolation.inl in Resources */,
+				D418814E1A35CC0A008E7CF5 /* matrix_inverse.inl in Resources */,
+				D418814F1A35CC0A008E7CF5 /* intrinsic_trigonometric.inl in Resources */,
+				D41881501A35CC0A008E7CF5 /* type_mat3x3.inl in Resources */,
+				D41881511A35CC0A008E7CF5 /* bit.inl in Resources */,
+				D41881521A35CC0A008E7CF5 /* intrinsic_vector_relational.inl in Resources */,
+				D41881531A35CC0A008E7CF5 /* closest_point.inl in Resources */,
+				D41881541A35CC0A008E7CF5 /* func_packing.inl in Resources */,
+				D41881551A35CC0A008E7CF5 /* normalize_dot.inl in Resources */,
+				D41881561A35CC0A008E7CF5 /* type_vec1.inl in Resources */,
+				D41881571A35CC0A008E7CF5 /* type_ptr.inl in Resources */,
+				D41881581A35CC0A008E7CF5 /* matrix_major_storage.inl in Resources */,
+				D41881591A35CC0A008E7CF5 /* func_vector_relational.inl in Resources */,
+				D418815A1A35CC0A008E7CF5 /* std_based_type.inl in Resources */,
+				D418815B1A35CC0A008E7CF5 /* type_mat4x2.inl in Resources */,
+				D418815C1A35CC0A008E7CF5 /* vector_angle.inl in Resources */,
+				D418815D1A35CC0A008E7CF5 /* inertia.inl in Resources */,
+				D418815E1A35CC0A008E7CF5 /* precision.inl in Resources */,
+				D418815F1A35CC0A008E7CF5 /* fast_trigonometry.inl in Resources */,
+				D41881601A35CC0A008E7CF5 /* int_10_10_10_2.inl in Resources */,
+				D41881611A35CC0A008E7CF5 /* associated_min_max.inl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4DBF9ED19F55085002A5306 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1310,16 +1514,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D4DBFA0419F55086002A5306 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D41880DF1A35CC0A008E7CF5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D41880E01A35CC0A008E7CF5 /* GameObjectBox.mm in Sources */,
+				D41880E21A35CC0A008E7CF5 /* main.m in Sources */,
+				D41880E31A35CC0A008E7CF5 /* GameGLView.m in Sources */,
+				D41880E51A35CC0A008E7CF5 /* GameDataReceiver.m in Sources */,
+				D41880E71A35CC0A008E7CF5 /* GameController.mm in Sources */,
+				D41880E81A35CC0A008E7CF5 /* glm.cpp in Sources */,
+				D41880E91A35CC0A008E7CF5 /* GameViewController.mm in Sources */,
+				D41880EA1A35CC0A008E7CF5 /* dummy.cpp in Sources */,
+				D41880EB1A35CC0A008E7CF5 /* GameScene.mm in Sources */,
+				D41880EC1A35CC0A008E7CF5 /* GameObjectData.m in Sources */,
+				D41880ED1A35CC0A008E7CF5 /* GameGLController.mm in Sources */,
+				D41880EE1A35CC0A008E7CF5 /* AppDelegate.m in Sources */,
+				D41880F01A35CC0A008E7CF5 /* GameDataSender.m in Sources */,
+				D41880F11A35CC0A008E7CF5 /* GameObject.mm in Sources */,
+				D41880F21A35CC0A008E7CF5 /* GameObjectPyramid.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4DBF9EB19F55085002A5306 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1345,23 +1564,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D4DBFA0219F55086002A5306 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D4DBFA0D19F55086002A5306 /* PlayRoomTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		D4DBFA0819F55086002A5306 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D4DBF9EE19F55085002A5306 /* PlayRoom */;
-			targetProxy = D4DBFA0719F55086002A5306 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D4DBF9FA19F55085002A5306 /* Main.storyboard */ = {
@@ -1383,6 +1586,43 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		D41881631A35CC0A008E7CF5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = PlayRoom/PlayRoom.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					GLM_FORCE_RADIANS,
+					METAL_DISABLED,
+				);
+				INFOPLIST_FILE = "PlayRoomSim-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = PlayRoomSim;
+				PROVISIONING_PROFILE = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D41881641A35CC0A008E7CF5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = PlayRoom/PlayRoom.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = "PlayRoomSim-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = PlayRoomSim;
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
 		D4DBFA0E19F55086002A5306 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1505,43 +1745,18 @@
 			};
 			name = Release;
 		};
-		D4DBFA1419F55086002A5306 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = PlayRoomTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PlayRoom.app/PlayRoom";
-			};
-			name = Debug;
-		};
-		D4DBFA1519F55086002A5306 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = PlayRoomTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PlayRoom.app/PlayRoom";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D41881621A35CC0A008E7CF5 /* Build configuration list for PBXNativeTarget "PlayRoom Sim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D41881631A35CC0A008E7CF5 /* Debug */,
+				D41881641A35CC0A008E7CF5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D4DBF9EA19F55085002A5306 /* Build configuration list for PBXProject "PlayRoom" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1556,15 +1771,6 @@
 			buildConfigurations = (
 				D4DBFA1119F55086002A5306 /* Debug */,
 				D4DBFA1219F55086002A5306 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D4DBFA1319F55086002A5306 /* Build configuration list for PBXNativeTarget "PlayRoomTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D4DBFA1419F55086002A5306 /* Debug */,
-				D4DBFA1519F55086002A5306 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

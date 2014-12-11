@@ -14,6 +14,8 @@
 @implementation GameObjectPyramid
 - (void)render
 {
+	[[GameController sharedInstance] beginDrawing];
+	
 	[super render];
 	
 	const glm::vec3 size = self.size;
@@ -21,7 +23,7 @@
 	const float halfY = size.y * 0.5;
 	const float halfZ = size.z * 0.5;
 	
-	float v[] {
+	const float v[] {
 		// top front
 		0,			halfY,		0,
 		-halfX,		-halfY,		halfZ,
@@ -54,23 +56,21 @@
 	};
 	
 	const size_t v_size = sizeof(v);
-	const size_t v_top_count = 4;
-	const size_t v_bottom_count = 2;
+	const size_t v_count = v_size / sizeof(*v);
 	[[GameController sharedInstance] setVertexData:v size:v_size];
 	
-	size_t i = 0;
-	size_t cnt = v_top_count;
-	for (; i<cnt; i++) {
-		const glm::vec3 n = [GameObject calculateNormalVector:(v + i * 9)];
-		[[GameController sharedInstance] setNormal:n];
-		[[GameController sharedInstance] drawTriangles:3 withOffset:i * 3];
+	const size_t v_vcount = v_count / 3;
+	const size_t v_tcount = v_vcount / 3;
+	for (size_t i=0; i<v_tcount; i++) {
+		const glm::vec3 normal = [GameObject calculateNormalVector:&v[i * (v_count / v_tcount)]];
+		const size_t baseIndex = i * 3;
+		
+		[[GameController sharedInstance] setNormal:normal forVertexIndex:(baseIndex + 0)];
+		[[GameController sharedInstance] setNormal:normal forVertexIndex:(baseIndex + 1)];
+		[[GameController sharedInstance] setNormal:normal forVertexIndex:(baseIndex + 2)];
+		[[GameController sharedInstance] drawTriangles:3 withOffset:baseIndex];
 	}
 	
-	cnt += v_bottom_count;
-	for (; i<cnt; i++) {
-		const glm::vec3 n = [GameObject calculateNormalVector:(v + i * 9)];
-		[[GameController sharedInstance] setNormal:n];
-		[[GameController sharedInstance] drawTriangles:3 withOffset:i * 3];
-	}
+	[[GameController sharedInstance] endDrawing];
 }
 @end

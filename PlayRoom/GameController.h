@@ -13,17 +13,19 @@
 #import "GameScene.h"
 
 
+extern NSString * const kGameEngineChoice;
+
+
 @class GameObject;
 
 
 @protocol GameControllerAPI
 + (BOOL)isSupported;
++ (NSString *)shaderFilename;
 
-- (Class)viewClass;
-- (void)setupWithLayer:(CALayer *)layer;
-
-- (void)initialize;
+- (void)configureWithView:(UIView *)view;
 - (void)reconfigure;
+
 - (void)render;
 
 - (void)setEye:(glm::vec3)eye lookAt:(glm::vec3)lookAt;
@@ -32,13 +34,15 @@
 - (void)setModelMatrix:(glm::mat4x4)matrix;
 - (void)setColor:(glm::vec4)color;
 
-- (void)setVertexData:(float *)data size:(size_t)size;
-- (void)setNormal:(glm::vec3)normal;
+- (void)setVertexData:(const float *)data size:(size_t)size;
+- (void)setNormal:(glm::vec3)normal forVertexIndex:(NSUInteger)index;
 
 - (void)setMaskMode:(BOOL)maskMode;
 - (void)setMaskColor:(glm::vec4)maskColor;
 
+- (void)beginDrawing;
 - (void)drawTriangles:(size_t)number withOffset:(size_t)offset;
+- (void)endDrawing;
 
 - (GameObject *)objectAtPoint:(CGPoint)point;
 @end
@@ -48,6 +52,8 @@
 @property(nonatomic, weak) CALayer *layer;
 @property(nonatomic, strong) GameScene *scene;
 
-+ (GameController<GameControllerAPI> *)supportedController;
 + (GameController<GameControllerAPI> *)sharedInstance;
+
++ (Class)controllerClassWithOpenGL;
++ (Class)controllerClassWithMetal;
 @end

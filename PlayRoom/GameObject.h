@@ -20,7 +20,6 @@
 @interface GameObject : NSObject
 @property(nonatomic, weak) GameScene *scene;
 @property(nonatomic, assign) glm::mat4 *matrix;
-@property(nonatomic, assign) glm::vec3 position;
 @property(nonatomic, assign) glm::vec3 size;
 @property(nonatomic, assign) glm::vec4 color;
 @property(nonatomic, assign) glm::vec4 maskColor;
@@ -30,7 +29,7 @@
 - (void)rotate:(glm::vec3)angles;
 - (void)rotateGlobal:(glm::vec3)angles;
 
-+ (glm::vec3)calculateNormalVector:(const float *)v;
++ (glm::vec3)calculateNormalVector:(const float *)triangle;
 
 - (void)render;
 - (void)renderChildren;

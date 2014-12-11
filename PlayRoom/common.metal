@@ -12,33 +12,22 @@
 using namespace metal;
 
 
-float4 sub_corner_color(vertex_t pos);
-float4 diffused_color(float4 color, float diffuse);
-
-
 struct ShaderValue {
 	float4 position [[ position ]];
 	float4 color;
 	float3 normal;
+	float3 light;
 };
 
 
-float4 sub_corner_color(vertex_t pos)
+static float4 sub_corner_color(float4 pos)
 {
 	float4 color;
-	color.r = pos.x > 0 ? 1 : 0;
-	color.g = pos.y > 0 ? 1 : 0;
-	color.b = pos.z > 0 ? 1 : 0;
+	color.r = pos.x > 0.0 ? 1.0 : 0.0;
+	color.g = pos.y > 0.0 ? 1.0 : 0.0;
+	color.b = pos.z > 0.0 ? 1.0 : 0.0;
 	color.a = 1.0;
 	return color;
-}
-
-
-float4 diffused_color(float4 color, float diffuse)
-{
-	float4 ret = color * diffuse;
-	ret.a = color.a;
-	return ret;
 }
 
 
@@ -47,24 +36,19 @@ vertex ShaderValue main_vertex(unsigned int vid [[ vertex_id ]],
 							   device attributes_t *attribs [[ buffer(1) ]])
 {
 	ShaderValue out;
-	
-	const float4x4 mvp_matrix = uniforms->proj_matrix * uniforms->view_matrix * attribs->matrix;
-	device vertex_t *v = &attribs->vertices[vid];
-	out.position = mvp_matrix * float4(v->x, v->y, v->z, 1.0);
+	out.position = uniforms->proj_matrix * uniforms->view_matrix * attribs->matrix * attribs->vertices[vid];
 	
 	if (uniforms->mask_mode == false) {
-		if (attribs->color.a > 0) {
+		if (attribs->color.a > 0.0) {
 			out.color = attribs->color;
 		}
 		else {
-			out.color = sub_corner_color(*v);
+			out.color = sub_corner_color(attribs->vertices[vid]);
 		}
+		
+		out.normal = float3(normalize(attribs->matrix * float4(attribs->normals[vid], 0.0)));
+		out.light = normalize(uniforms->light_position);
 	}
-	else {
-		out.color = uniforms->mask_color;
-	}
-	
-	out.normal = float3(mvp_matrix * float4(attribs->normal, 0));
 	
 	return out;
 }
@@ -75,19 +59,12 @@ fragment float4 main_fragment(ShaderValue in [[ stage_in ]],
 							  device const attributes_t *attribs [[ buffer(1) ]])
 {
 	if (uniforms->mask_mode == false) {
-		const float4x4 vp_matrix = uniforms->proj_matrix * uniforms->view_matrix;
-		const float3 in_position = float3(in.position);
-		const float3 light_position = uniforms->light_position; // float3(vp_matrix * float4(uniforms->light_position, 0));
-		
-		const float dist = distance(light_position, in_position);
-		const float3 light_vector = normalize(light_position - in_position);
-		
-		float diffuse = max(dot(attribs->normal, light_vector), 0.1);
-		diffuse = diffuse * (1.0 / (1.0 + (0.2 * dist * dist))) + 0.2;
-		
-		return diffused_color(in.color, diffuse);
+		float4 color = in.color;
+		color *= clamp(max(0.0, dot(in.normal, in.light)), 0.2, 1.0);
+		color.a = in.color.a;
+		return color;
 	}
 	else {
-		return in.color;
+		return attribs->mask_color;
 	}
 };

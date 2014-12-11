@@ -40,6 +40,18 @@
 }
 
 
+- (void)render
+{
+	// nothing should be applied
+}
+
+
+- (void)setMaskMode:(BOOL)maskMode
+{
+	[[GameController sharedInstance] setMaskMode:maskMode];
+}
+
+
 - (void)setNeedsUpdateMask:(BOOL)needsUpdateMask
 {
 	if (needsUpdateMask) {

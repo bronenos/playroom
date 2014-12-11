@@ -14,6 +14,40 @@
 #import "GameMetalController.h"
 #import "GameMetalView.h"
 #import "GameMetalTypes.h"
+#import "GameObject.h"
+
+
+static simd::float3 convert_vec3(glm::vec3 m)
+{
+	return (simd::float3) { m[0], m[1], m[2] };
+}
+
+
+static simd::float3x3 convert_mat3(glm::mat3 m)
+{
+	return simd::float3x3(
+						  (simd::float3) { m[0][0], m[0][1], m[0][2] },
+						  (simd::float3) { m[1][0], m[1][1], m[1][2] },
+						  (simd::float3) { m[2][0], m[2][1], m[2][2] }
+	);
+}
+
+
+static simd::float4 convert_vec4(glm::vec4 m)
+{
+	return (simd::float4) { m[0], m[1], m[2], m[3] };
+}
+
+
+static simd::float4x4 convert_mat4(glm::mat4 m)
+{
+	return simd::float4x4(
+						  (simd::float4) { m[0][0], m[0][1], m[0][2], m[0][3] },
+						  (simd::float4) { m[1][0], m[1][1], m[1][2], m[1][3] },
+						  (simd::float4) { m[2][0], m[2][1], m[2][2], m[2][3] },
+						  (simd::float4) { m[3][0], m[3][1], m[3][2], m[3][3] }
+						  );
+}
 
 
 @interface GameMetalController()
@@ -26,32 +60,48 @@
 @property(nonatomic, strong) id<MTLBuffer> modelBuffer;
 @property(nonatomic, strong) MTLRenderPassDescriptor *renderPass;
 @property(nonatomic, strong) id<MTLTexture> depthTexture;
+@property(nonatomic, strong) id<MTLCommandBuffer> commandBuffer;
 @property(nonatomic, strong) id<MTLRenderCommandEncoder> commandEncoder;
+@property(nonatomic, assign) glm::mat4 projMatrix;
+@property(nonatomic, assign) glm::mat4 viewMatrix;
+@property(nonatomic, assign) NSUInteger objectIndex;
 @property(nonatomic, assign) std::vector<GLubyte> maskData;
+@property(nonatomic, strong) dispatch_semaphore_t rendererLock;
+
+- (attributes_t *)currentAttributes;
 @end
 
 
 @implementation GameMetalController
+- (instancetype)init
+{
+	if ((self = [super init])) {
+		self.rendererLock = dispatch_semaphore_create(1);
+	}
+	
+	return self;
+}
+
+
 + (BOOL)isSupported
 {
 	return MTLCreateSystemDefaultDevice() ? YES : NO;
 }
 
 
-- (Class)viewClass
++ (NSString *)shaderFilename
 {
-	return [GameMetalView class];
+	return @"common.metalsrc";
 }
 
 
-- (void)setupWithLayer:(CALayer *)layer
+- (void)configureWithView:(UIView *)view
 {
-	self.layer = layer;
-}
-
-
-- (void)initialize
-{
+	UIView *renderView = [[GameMetalView alloc] initWithFrame:view.bounds];
+	renderView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	[view addSubview:renderView];
+	self.layer = renderView.layer;
+	
 	self.device = MTLCreateSystemDefaultDevice();
 	
 	self.commandQueue = [self.device newCommandQueue];
@@ -112,6 +162,8 @@
 
 - (void)render
 {
+	dispatch_semaphore_wait(self.rendererLock, DISPATCH_TIME_FOREVER);
+	
 	CAMetalLayer *metalLayer = (id) self.layer;
 	id<CAMetalDrawable> drawable = [metalLayer nextDrawable];
 	id<MTLTexture> texture = drawable.texture;
@@ -139,88 +191,119 @@
 		ddesc.clearDepth = 1.0;
 	}
 	
-	id<MTLCommandBuffer> commandBuffer = [self.commandQueue commandBuffer];
-	
-	id<MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:self.renderPass];
-	[commandEncoder setDepthStencilState:self.depthState];
-	[commandEncoder setRenderPipelineState:self.pipelineState];
-	[commandEncoder setVertexBuffer:self.uniformBuffer offset:0 atIndex:0];
-	[commandEncoder setVertexBuffer:self.modelBuffer offset:0 atIndex:1];
-	[commandEncoder setFragmentBuffer:self.uniformBuffer offset:0 atIndex:0];
-	[commandEncoder setFragmentBuffer:self.modelBuffer offset:0 atIndex:1];
-	[commandEncoder setCullMode:MTLCullModeFront];
-	self.commandEncoder = commandEncoder;
-	[self.scene renderChildren];
-	[commandEncoder endEncoding];
-	
-	[commandBuffer presentDrawable:drawable];
-	[commandBuffer commit];
-	
-	self.commandEncoder = nil;
+	self.commandBuffer = [self.commandQueue commandBuffer];
+	if (self.commandBuffer) {
+		self.commandEncoder = [self.commandBuffer renderCommandEncoderWithDescriptor:self.renderPass];
+		if (self.commandEncoder) {
+			[self.commandEncoder setDepthStencilState:self.depthState];
+			[self.commandEncoder setRenderPipelineState:self.pipelineState];
+			[self.commandEncoder setVertexBuffer:self.uniformBuffer offset:0 atIndex:0];
+			[self.commandEncoder setFragmentBuffer:self.uniformBuffer offset:0 atIndex:0];
+			[self.commandEncoder setCullMode:MTLCullModeFront];
+			
+			self.objectIndex = 0;
+			[self.scene renderChildren];
+			
+			[self.commandEncoder endEncoding];
+			self.commandEncoder = nil;
+		}
+		
+		__block dispatch_semaphore_t semaphore = self.rendererLock;
+		[self.commandBuffer addCompletedHandler:^(id<MTLCommandBuffer>) {
+			dispatch_semaphore_signal(semaphore);
+		}];
+		
+		[self.commandBuffer presentDrawable:drawable];
+		[self.commandBuffer commit];
+		self.commandBuffer = nil;
+	}
+}
+
+
+- (attributes_t *)currentAttributes
+{
+	const char *basePointer = (char *) [self.modelBuffer contents];
+	return (attributes_t *) (basePointer + self.objectIndex * sizeof(attributes_t));
 }
 
 
 - (void)setEye:(glm::vec3)eye lookAt:(glm::vec3)lookAt
 {
 	const CGSize layerSize = self.layer.bounds.size;
-	
-	const glm::mat4 pMatrix = glm::perspective<float>(45, (layerSize.width / layerSize.height), 0.1, 1000);
-	const glm::mat4 vMatrix = glm::lookAt(eye, lookAt, glm::vec3(0, 1, 0));
+	self.projMatrix = glm::perspective<float>(45, (layerSize.width / layerSize.height), 0.1, 1000);
+	self.viewMatrix = glm::lookAt(eye, lookAt, glm::vec3(0, 1, 0));
 	
 	uniforms_t *uniforms = (uniforms_t *) [self.uniformBuffer contents];
-	memcpy(&uniforms->proj_matrix, &pMatrix[0][0], sizeof(pMatrix));
-	memcpy(&uniforms->view_matrix, &vMatrix[0][0], sizeof(vMatrix));
+	uniforms->proj_matrix = convert_mat4(_projMatrix);
+	uniforms->view_matrix = convert_mat4(_viewMatrix);
 }
 
 
 - (void)setLight:(glm::vec3)light
 {
 	uniforms_t *uniforms = (uniforms_t *) [self.uniformBuffer contents];
-	memcpy(&uniforms->light_position, &light[0], sizeof(light));
+	uniforms->light_position = convert_vec3(light);
 }
 
 
 - (void)setModelMatrix:(glm::mat4x4)matrix
 {
-	attributes_t *attributes = (attributes_t *) [self.modelBuffer contents];
-	memcpy(&attributes->matrix, &matrix[0][0], sizeof(matrix));
+	attributes_t *attribs = [self currentAttributes];
+	attribs->matrix = convert_mat4(matrix);
+	
+	const glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(self.viewMatrix * matrix)));
+	attribs->normal_matrix = convert_mat3(normalMatrix);
 }
 
 
 - (void)setColor:(glm::vec4)color
 {
-	attributes_t *attributes = (attributes_t *) [self.modelBuffer contents];
-	memcpy(&attributes->color, &color[0], sizeof(color));
+	attributes_t *attribs = [self currentAttributes];
+	attribs->color = convert_vec4(color);
 }
 
 
-- (void)setVertexData:(float *)data size:(size_t)size
+- (void)setVertexData:(const float *)data size:(size_t)size
 {
-	attributes_t *attributes = (attributes_t *) [self.modelBuffer contents];
-	memcpy(&attributes->vertices, data, size);
+	attributes_t *attribs = [self currentAttributes];
+	for (size_t i=0, offset=0; offset<size; i++) {
+		simd::float4 v;
+		v.x = data[offset++];
+		v.y = data[offset++];
+		v.z = data[offset++];
+		v.w = 1.0;
+		
+		attribs->vertices[i] = v;
+	}
 }
 
 
-- (void)setNormal:(glm::vec3)normal
+- (void)setNormal:(glm::vec3)normal forVertexIndex:(NSUInteger)index
 {
-	attributes_t *attributes = (attributes_t *) [self.modelBuffer contents];
-	memcpy(&attributes->normal, &normal[0], sizeof(normal));
+	attributes_t *attribs = [self currentAttributes];
+	attribs->normals[index] = convert_vec3(normal);
 }
 
 
 - (void)setMaskMode:(BOOL)maskMode
 {
-	bool b = maskMode;
-	
 	uniforms_t *uniforms = (uniforms_t *) [self.uniformBuffer contents];
-	memcpy(&uniforms->mask_mode, &b, sizeof(b));
+	uniforms->mask_mode = maskMode;
 }
 
 
 - (void)setMaskColor:(glm::vec4)maskColor
 {
-	uniforms_t *uniforms = (uniforms_t *) [self.uniformBuffer contents];
-	memcpy(&uniforms->mask_color, &maskColor, sizeof(maskColor));
+	attributes_t *attribs = [self currentAttributes];
+	attribs->mask_color = convert_vec4(maskColor);
+}
+
+
+- (void)beginDrawing
+{
+	static const size_t attrib_size = sizeof(attributes_t);
+	[self.commandEncoder setVertexBuffer:self.modelBuffer offset:(attrib_size * self.objectIndex) atIndex:1];
+	[self.commandEncoder setFragmentBuffer:self.modelBuffer offset:(attrib_size * self.objectIndex) atIndex:1];
 }
 
 
@@ -229,6 +312,12 @@
 	[self.commandEncoder drawPrimitives:MTLPrimitiveTypeTriangle
 							vertexStart:offset
 							vertexCount:number];
+}
+
+
+- (void)endDrawing
+{
+	self.objectIndex++;
 }
 
 

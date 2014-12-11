@@ -24,9 +24,13 @@ enum class GLShader {
 @property(nonatomic, assign) std::vector<GLubyte> maskData;
 @property(nonatomic, assign) GLuint shaderProgram;
 @property(nonatomic, assign) GLuint vertexBuffer;
+@property(nonatomic, assign) glm::mat4 projectionMatrix;
+@property(nonatomic, assign) glm::mat4 viewMatrix;
 
-@property(nonatomic, assign) GLuint vpSlot;
-@property(nonatomic, assign) GLuint modelSlot;
+@property(nonatomic, assign) GLuint projMatrixSlot;
+@property(nonatomic, assign) GLuint viewMatrixSlot;
+@property(nonatomic, assign) GLuint modelMatrixSlot;
+@property(nonatomic, assign) GLuint normalMatrixSlot;
 @property(nonatomic, assign) GLuint vertexSlot;
 @property(nonatomic, assign) GLuint normalSlot;
 @property(nonatomic, assign) GLuint colorSlot;
@@ -47,10 +51,16 @@ enum class GLShader {
 }
 
 
++ (NSString *)shaderFilename
+{
+	return @"fragment.glsl";
+}
+
+
 - (instancetype)init
 {
 	if ((self = [super init])) {
-		self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+		self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
 		[EAGLContext setCurrentContext:self.context];
 	}
 	
@@ -93,20 +103,13 @@ enum class GLShader {
 }
 
 
-- (Class)viewClass
+- (void)configureWithView:(UIView *)view
 {
-	return [GameGLView class];
-}
-
-
-- (void)setupWithLayer:(CALayer *)layer
-{
-	self.layer = layer;
-}
-
-
-- (void)initialize
-{
+	UIView *renderView = [[GameGLView alloc] initWithFrame:view.bounds];
+	renderView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	[view addSubview:renderView];
+	self.layer = renderView.layer;
+	
 	[self setupBuffers];
 	[self loadShaders];
 	[self reconfigure];
@@ -159,8 +162,8 @@ enum class GLShader {
 
 - (void)loadShaders
 {
-	GLuint vertexShader = [self loadShaderWithType:GLShader::Vertex];
-	GLuint fragmentShader = [self loadShaderWithType:GLShader::Fragment];
+	GLuint vertexShader = [self loadShaderWithType:(GLShader::Vertex)];
+	GLuint fragmentShader = [self loadShaderWithType:(GLShader::Fragment)];
 	
 	_shaderProgram = glCreateProgram();
 	glAttachShader(_shaderProgram, vertexShader);
@@ -180,8 +183,10 @@ enum class GLShader {
 	
 	glUseProgram(_shaderProgram);
 	
-	self.vpSlot = glGetUniformLocation(_shaderProgram, "u_vp");
-	self.modelSlot = glGetUniformLocation(_shaderProgram, "u_m");
+	self.projMatrixSlot = glGetUniformLocation(_shaderProgram, "u_projMatrix");
+	self.viewMatrixSlot = glGetUniformLocation(_shaderProgram, "u_viewMatrix");
+	self.modelMatrixSlot = glGetUniformLocation(_shaderProgram, "u_modelMatrix");
+	self.normalMatrixSlot = glGetUniformLocation(_shaderProgram, "u_normalMatrix");
 	self.vertexSlot = glGetAttribLocation(_shaderProgram, "a_vertex");
 	self.normalSlot = glGetUniformLocation(_shaderProgram, "u_normal");
 	self.colorSlot = glGetUniformLocation(_shaderProgram, "u_color");
@@ -195,16 +200,15 @@ enum class GLShader {
 
 - (GLuint)loadShaderWithType:(GLShader)shaderType
 {
-	std::string shaderSource;
-	GLuint shader;
-	
 	NSString *fileName = (shaderType == GLShader::Vertex ? @"vertex" : @"fragment");
 	NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"glsl"];
 	
 	NSString *fileContents = [[NSString alloc] initWithContentsOfFile:filePath
 															 encoding:NSUTF8StringEncoding
 																error:nil];
-	shaderSource = [fileContents UTF8String];
+	
+	std::string shaderSource = [fileContents UTF8String];
+	GLuint shader = 0;
 	
 	if (shaderSource.size() > 0) {
 		if (shaderType == GLShader::Vertex) {
@@ -285,11 +289,11 @@ enum class GLShader {
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &w);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &h);
 	
-	const glm::mat4 pMatrix = glm::perspective<float>(45, (float(w) / float(h)), 0.1, 1000);
-	const glm::mat4 vMatrix = glm::lookAt(eye, lookAt, glm::vec3(0, 1, 0));
-	const glm::mat4 vpMatrix = pMatrix * vMatrix;
+	self.projectionMatrix = glm::perspective<float>(45, (float(w) / float(h)), 0.1, 1000);
+	self.viewMatrix = glm::lookAt(eye, lookAt, glm::vec3(0, 1, 0));
 	
-	glUniformMatrix4fv(self.vpSlot, 1, GL_FALSE, &vpMatrix[0][0]);
+	glUniformMatrix4fv(self.projMatrixSlot, 1, GL_FALSE, &_projectionMatrix[0][0]);
+	glUniformMatrix4fv(self.viewMatrixSlot, 1, GL_FALSE, &_viewMatrix[0][0]);
 }
 
 
@@ -301,7 +305,10 @@ enum class GLShader {
 
 - (void)setModelMatrix:(glm::mat4x4)matrix
 {
-	glUniformMatrix4fv(self.modelSlot, 1, GL_FALSE, &matrix[0][0]);
+	glUniformMatrix4fv(self.modelMatrixSlot, 1, GL_FALSE, &matrix[0][0]);
+	
+	glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(self.viewMatrix * matrix)));
+	glUniformMatrix3fv(self.normalMatrixSlot, 1, GL_FALSE, &normalMatrix[0][0]);
 }
 
 
@@ -311,14 +318,14 @@ enum class GLShader {
 }
 
 
-- (void)setVertexData:(float *)data size:(size_t)size
+- (void)setVertexData:(const float *)data size:(size_t)size
 {
 	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	glVertexAttribPointer(self.vertexSlot, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 
-- (void)setNormal:(glm::vec3)normal
+- (void)setNormal:(glm::vec3)normal forVertexIndex:(NSUInteger)index
 {
 	glUniform3fv(self.normalSlot, 1, &normal[0]);
 }
@@ -337,9 +344,21 @@ enum class GLShader {
 }
 
 
+- (void)beginDrawing
+{
+	// nothing should be applied
+}
+
+
 - (void)drawTriangles:(size_t)number withOffset:(size_t)offset
 {
 	glDrawArrays(GL_TRIANGLES, (GLint)offset, (GLint)number);
+}
+
+
+- (void)endDrawing
+{
+	// nothing should be applied
 }
 
 

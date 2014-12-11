@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6221" systemVersion="14C78c" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6213"/>
     </dependencies>
     <scenes>
         <!--Game View Controller-->
@@ -13,10 +13,52 @@
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3se-qz-xqx">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dnB-ZY-Fxd" userLabel="Render View">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7fu-jV-sNy">
+                                <rect key="frame" x="0.0" y="436" width="320" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="InM-mC-ON1"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem style="plain" id="g4Y-Uk-Wjw">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="ZvI-YX-qBB">
+                                            <rect key="frame" x="16" y="8" width="123" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="OpenGL"/>
+                                                <segment title="Metal"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="doChooseEngine:" destination="BV1-FR-VrT" eventType="valueChanged" id="Fj7-ol-22l"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </barButtonItem>
+                                    <barButtonItem systemItem="flexibleSpace" id="JOM-gO-uHN"/>
+                                </items>
+                            </toolbar>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="dnB-ZY-Fxd" secondAttribute="bottom" id="1Xh-BO-ajU"/>
+                            <constraint firstItem="dnB-ZY-Fxd" firstAttribute="top" secondItem="3se-qz-xqx" secondAttribute="top" id="5VG-z6-fbL"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="7fu-jV-sNy" secondAttribute="bottom" id="8Nb-yw-4VS"/>
+                            <constraint firstAttribute="trailing" secondItem="7fu-jV-sNy" secondAttribute="trailing" id="VS3-y5-rKO"/>
+                            <constraint firstAttribute="trailing" secondItem="dnB-ZY-Fxd" secondAttribute="trailing" id="VeE-1A-z2k"/>
+                            <constraint firstItem="dnB-ZY-Fxd" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="ewM-HI-SFb"/>
+                            <constraint firstItem="7fu-jV-sNy" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="jLU-xA-10S"/>
+                        </constraints>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="engineChoose" destination="ZvI-YX-qBB" id="DEv-L5-vUT"/>
+                        <outlet property="engineRenderView" destination="dnB-ZY-Fxd" id="GP4-h6-zfu"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>

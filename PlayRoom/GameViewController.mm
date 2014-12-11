@@ -17,6 +17,7 @@
 #import "GameController.h"
 #import "GameObjectBox.h"
 #import "GameObjectPyramid.h"
+using namespace glm;
 
 
 static NSString * const kCloudRecordType		= @"Config";
@@ -25,9 +26,9 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 @interface GameViewController() <GameDataReceiverDelegate>
 @property(nonatomic, strong) GameController<GameControllerAPI> *gameController;
-@property(nonatomic, strong) GameScene *scene;
-@property(nonatomic, strong) GameObjectBox *boxShape;
-@property(nonatomic, strong) GameObjectPyramid *pyramidShape;
+@property(nonatomic, weak) GameScene *scene;
+@property(nonatomic, weak) GameObject *boxShape;
+@property(nonatomic, weak) GameObject *pyramidShape;
 @property(nonatomic, strong) CADisplayLink *displayLink;
 
 @property(nonatomic, strong) CKRecordID *pyramidID;
@@ -36,7 +37,12 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 @property(nonatomic, strong) GameDataSender *dataSender;
 @property(nonatomic, strong) GameDataReceiver *dataReceiver;
 
+@property(nonatomic, weak) IBOutlet UIView *engineRenderView;
+@property(nonatomic, weak) IBOutlet UISegmentedControl *engineChoose;
+
+- (BOOL)shouldUseMetal;
 - (void)configure;
+- (void)setupEngine;
 - (void)setupScene;
 - (void)render:(CADisplayLink *)link;
 - (void)rotateWithPoint:(CGPoint)pt;
@@ -52,6 +58,8 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 - (void)onAppWillResignActive;
 - (void)onAppDidBecomeActive;
+
+- (IBAction)doChooseEngine:(UISegmentedControl *)control;
 @end
 
 
@@ -82,27 +90,6 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 }
 
 
-- (void)configure
-{
-	self.gameController = [GameController supportedController];
-	
-	self.dataSender = [[GameDataSender alloc] init];
-	self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
-	
-	self.pyramidID = [[CKRecordID alloc] initWithRecordName:kCloudRecordType];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(onAppWillResignActive)
-												 name:UIApplicationWillResignActiveNotification
-											   object:nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(onAppDidBecomeActive)
-												 name:UIApplicationDidBecomeActiveNotification
-											   object:nil];
-}
-
-
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -114,15 +101,14 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 
 #pragma mark - View
-- (void)loadView
-{
-	self.view = [[self.gameController viewClass] new];
-}
-
-
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	
+	NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
+	self.engineChoose.selectedSegmentIndex = [defs integerForKey:kGameEngineChoice];
+	[self.engineChoose setEnabled:(!![GameController controllerClassWithOpenGL]) forSegmentAtIndex:0];
+	[self.engineChoose setEnabled:(!![GameController controllerClassWithMetal]) forSegmentAtIndex:1];
 	
 	UIPanGestureRecognizer *panRec = [[UIPanGestureRecognizer alloc] initWithTarget:self
 																			 action:@selector(doRotate:)];
@@ -134,10 +120,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 {
 	[super viewWillAppear:animated];
 	
-	[self.gameController setupWithLayer:self.view.layer];
-	[self.gameController initialize];
-	
-	[self setupScene];
+	[self setupEngine];
 	[self requestCloudRecord];
 }
 
@@ -162,21 +145,80 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 
 #pragma mark - Internal
+- (BOOL)shouldUseMetal
+{
+	if (self.engineChoose.selectedSegmentIndex == 0) {
+		return NO;
+	}
+	
+	return YES;
+}
+
+
+- (void)configure
+{
+	self.dataSender = [[GameDataSender alloc] init];
+	self.dataReceiver = [[GameDataReceiver alloc] initWithDelegate:self];
+	self.pyramidID = [[CKRecordID alloc] initWithRecordName:kCloudRecordType];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(onAppWillResignActive)
+												 name:UIApplicationWillResignActiveNotification
+											   object:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(onAppDidBecomeActive)
+												 name:UIApplicationDidBecomeActiveNotification
+											   object:nil];
+}
+
+
+- (void)setupEngine
+{
+	self.displayLink.paused = YES;
+	
+	if ([self shouldUseMetal]) {
+		self.gameController = [[GameController controllerClassWithMetal] new];
+	}
+	else {
+		self.gameController = [[GameController controllerClassWithOpenGL] new];
+	}
+	
+	[self.engineRenderView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+	[self.gameController configureWithView:self.engineRenderView];
+	
+	[self setupScene];
+	
+	self.displayLink.paused = NO;
+}
+
+
 - (void)setupScene
 {
+	const vec3 lightPosition = vec3(10, 20, 0);
+	
 	self.scene = self.gameController.scene;
-	[self.scene setColor:glm::vec4(0.5, 0.5, 0.5, 1.0)];
-	[self.scene setEye:glm::vec3(0, 25, 100) lookAt:glm::vec3(0, -10, 0)];
-	[self.scene setLight:glm::vec3(65, 40, 10)];
+	self.scene.color = vec4(0.5, 0.5, 0.5, 1.0);
+	[self.scene setEye:vec3(0, 25, 100) lookAt:vec3(0, -10, 0)];
+	[self.scene setLight:lightPosition];
 	
-	self.pyramidShape = [GameObjectPyramid new];
-	self.pyramidShape.size = glm::vec3(40, 55, 40);
-	self.pyramidShape.color = glm::vec4(0, 0, 0, 0);
+	GameObject *pyramidShape = [GameObjectPyramid new];
+	pyramidShape.size = vec3(40, 55, 40);
+	pyramidShape.color = vec4(0, 0, 0, 0);
+	self.pyramidShape = pyramidShape;
 	
-	self.boxShape = [GameObjectBox new];
-	[self.boxShape moveBy:glm::vec3(-20, 0, 0)];
-	[self.scene addChild:self.boxShape];
-	[self.boxShape addChild:self.pyramidShape];
+	GameObject *boxShape = [GameObjectBox new];
+	[boxShape moveBy:vec3(-20, 0, 0)];
+	self.boxShape = boxShape;
+	
+	[boxShape addChild:pyramidShape];
+	[self.scene addChild:boxShape];
+	
+	GameObject *lightShape = [GameObjectPyramid new];
+	lightShape.size = vec3(5, 5, 5);
+	lightShape.color = vec4(1, 1, 1, 1);
+	[lightShape moveBy:lightPosition];
+	[self.scene addChild:lightShape];
 }
 
 
@@ -191,7 +233,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 	if (pt.x > 0 && _prevPoint.x > 0) {
 		const float deltaX = 0.02 * (pt.x - _prevPoint.x);
 		const float deltaY = 0.02 * (pt.y - _prevPoint.y);
-		[self.pyramidShape rotateGlobal:glm::vec3(deltaY, deltaX, 0)];
+		[self.pyramidShape rotateGlobal:vec3(deltaY, deltaX, 0)];
 	}
 	
 	_prevPoint = pt;
@@ -222,8 +264,7 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 			if (strongSelf->_wasMoved == NO) {
 				strongSelf.pyramidRecord = record;
 				
-#				warning "Enable is back"
-//				[[strongSelf pyramidMatrix] setData:record[kCloudRecordMatrixKey]];
+				[[strongSelf pyramidMatrix] setData:record[kCloudRecordMatrixKey]];
 				[strongSelf updateSceneMask];
 			}
 		}
@@ -294,5 +335,16 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 - (void)onAppDidBecomeActive
 {
 	self.displayLink.paused = NO;
+}
+
+
+#pragma mark - User
+- (IBAction)doChooseEngine:(UISegmentedControl *)control
+{
+	NSUserDefaults *defs = [NSUserDefaults standardUserDefaults];
+	[defs setInteger:self.engineChoose.selectedSegmentIndex forKey:kGameEngineChoice];
+	[defs synchronize];
+	
+	[self setupEngine];
 }
 @end
