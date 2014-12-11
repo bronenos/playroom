@@ -27,6 +27,8 @@
 
 - (void)setData:(NSData *)data
 {
-	memcpy(self.bytes, data.bytes, data.length);
+	if (data) {
+		memcpy(self.bytes, data.bytes, data.length);
+	}
 }
 @end

@@ -5,7 +5,7 @@ uniform mat4 u_projMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_modelMatrix;
 uniform mat3 u_normalMatrix;
-uniform vec3 u_light;
+uniform vec3 u_lightPosition;
 uniform int u_maskMode;
 uniform vec4 u_maskColor;
 

@@ -5,9 +5,9 @@ uniform mat4 u_projMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_modelMatrix;
 uniform mat3 u_normalMatrix;
-uniform vec3 u_normal;
-uniform vec4 u_color;
-uniform vec3 u_light;
+uniform vec3 u_normalVector;
+uniform vec4 u_modelColor;
+uniform vec3 u_lightPosition;
 uniform int u_maskMode;
 
 attribute vec4 a_vertex;
@@ -31,14 +31,14 @@ void main()
 	gl_Position = u_projMatrix * u_viewMatrix * u_modelMatrix * a_vertex;
 	
 	if (u_maskMode == 0) {
-		if (u_color.a > 0.0) {
-			v_color = u_color;
+		if (u_modelColor.a > 0.0) {
+			v_color = u_modelColor;
 		}
 		else {
 			v_color = sub_corner_color(a_vertex);
 		}
 		
-		v_normal = vec3(normalize(u_modelMatrix * vec4(u_normal, 0.0)));
-		v_light = normalize(u_light);
+		v_normal = vec3(normalize(u_modelMatrix * vec4(u_normalVector, 0.0)));
+		v_light = normalize(u_lightPosition);
 	}
 }

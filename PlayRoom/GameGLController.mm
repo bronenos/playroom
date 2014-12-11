@@ -188,9 +188,9 @@ enum class GLShader {
 	self.modelMatrixSlot = glGetUniformLocation(_shaderProgram, "u_modelMatrix");
 	self.normalMatrixSlot = glGetUniformLocation(_shaderProgram, "u_normalMatrix");
 	self.vertexSlot = glGetAttribLocation(_shaderProgram, "a_vertex");
-	self.normalSlot = glGetUniformLocation(_shaderProgram, "u_normal");
-	self.colorSlot = glGetUniformLocation(_shaderProgram, "u_color");
-	self.lightSlot = glGetUniformLocation(_shaderProgram, "u_light");
+	self.normalSlot = glGetUniformLocation(_shaderProgram, "u_normalVector");
+	self.colorSlot = glGetUniformLocation(_shaderProgram, "u_modelColor");
+	self.lightSlot = glGetUniformLocation(_shaderProgram, "u_lightPosition");
 	self.maskModeSlot = glGetUniformLocation(_shaderProgram, "u_maskMode");
 	self.maskColorSlot = glGetUniformLocation(_shaderProgram, "u_maskColor");
 	

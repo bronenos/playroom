@@ -177,6 +177,8 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 {
 	self.displayLink.paused = YES;
 	
+	NSData *mat = [[[self pyramidMatrix] data] copy];
+	
 	if ([self shouldUseMetal]) {
 		self.gameController = [[GameController controllerClassWithMetal] new];
 	}
@@ -188,6 +190,8 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 	[self.gameController configureWithView:self.engineRenderView];
 	
 	[self setupScene];
+	
+	[[self pyramidMatrix] setData:mat];
 	
 	self.displayLink.paused = NO;
 }
@@ -242,8 +246,12 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 
 - (GameObjectData *)pyramidMatrix
 {
-	const float *objm = &(*self.pyramidShape.matrix)[0][0];
-	return [GameObjectData dataWithBytes:objm length:16 * sizeof(float)];
+	if (self.pyramidShape) {
+		const float *objm = &(*self.pyramidShape.matrix)[0][0];
+		return [GameObjectData dataWithBytes:objm length:16 * sizeof(float)];
+	}
+	
+	return nil;
 }
 
 
