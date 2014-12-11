@@ -60,7 +60,7 @@ enum class GLShader {
 - (instancetype)init
 {
 	if ((self = [super init])) {
-		self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+		self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		[EAGLContext setCurrentContext:self.context];
 	}
 	

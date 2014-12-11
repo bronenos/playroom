@@ -116,12 +116,14 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 }
 
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidLayoutSubviews
 {
-	[super viewWillAppear:animated];
+	[super viewDidLayoutSubviews];
 	
-	[self setupEngine];
-	[self requestCloudRecord];
+	if (self.gameController == nil) {
+		[self setupEngine];
+		[self requestCloudRecord];
+	}
 }
 
 
@@ -141,6 +143,12 @@ static NSString * const kCloudRecordMatrixKey	= @"Matrix";
 	[self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	self.displayLink.paused = YES;
 	self.displayLink = nil;
+}
+
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+	return UIInterfaceOrientationMaskPortrait;
 }
 
 
